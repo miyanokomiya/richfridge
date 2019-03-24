@@ -1,6 +1,6 @@
 # refref
 
-> My wonderful Nuxt.js project
+> refref
 
 ## Build Setup
 
