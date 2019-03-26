@@ -6,10 +6,11 @@ module.exports = {
     'jest/globals': true
   },
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@typescript-eslint/parser',
     ecmaFeatures: {
-      'legacyDecorators': true
-    }
+      legacyDecorators: true
+    },
+    project: './tsconfig.json'
   },
   extends: [
     '@nuxtjs',
@@ -18,11 +19,7 @@ module.exports = {
     'prettier',
     'prettier/vue'
   ],
-  plugins: [
-    'prettier',
-    'jest'
-  ],
-  // add your custom rules here
+  plugins: ['prettier', '@typescript-eslint', 'jest'],
   rules: {
     'nuxt/no-cjs-in-config': 'off',
     'no-console': 'off'

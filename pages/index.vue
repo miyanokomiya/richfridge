@@ -30,7 +30,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { db } from '@/plugins/firebase'
 import Logo from '@/components/Logo.vue'
 import HelloWorld from '@/components/HelloWorld.vue'
-import { Fridge, Lane, Stage, Item } from '@/plugins/models'
+import * as models from '@/plugins/models'
 
 @Component({
   components: {
@@ -44,51 +44,50 @@ export default class Index extends Vue {
   lanes: { [key: string]: Lane } = {}
   stages: { [key: string]: Stage } = {}
 
-  get stageList(): Array<Object> {
+  get stageList(): Stage[] {
     if (!this.fridge) return []
-    return this.fridge.stageOrder.map(id => this.stages[id])
+    return models.map2list<Stage>(this.stages, this.fridge.stageOrder)
+  }
+
+  get laneList(): Lane[] {
+    if (!this.fridge) return []
+    return models.map2list<Lane>(this.stages, this.fridge.laneOrder)
   }
 
   mounted() {
     this.load()
   }
 
-  async load() {
+  load() {
     const ref = db.doc('/fridges/KUl92YJbp3RNdFXKrGNk')
-    await ref.get().then(doc => {
-      this.fridge = Fridge.parse(doc.data())
+    ref.get().then(doc => {
+      this.fridge = doc.data() as Fridge
       return Promise.resolve()
     })
-    await ref
+    ref
       .collection('items')
       .get()
       .then(query => {
         query.forEach(doc => {
-          this.items[doc.id] = Item.parse(doc.data())
+          this.items[doc.id] = doc.data() as Item
         })
       })
-    await ref
+    ref
       .collection('lanes')
       .get()
       .then(query => {
         query.forEach(doc => {
-          this.lanes[doc.id] = Lane.parse(doc.data())
+          this.lanes[doc.id] = doc.data() as Lane
         })
       })
-    await ref
+    ref
       .collection('stages')
       .get()
       .then(query => {
         query.forEach(doc => {
-          this.stages[doc.id] = Stage.parse(doc.data())
+          this.stages[doc.id] = doc.data() as Stage
         })
       })
-
-    console.log(this.fridge)
-    console.log(this.items)
-    console.log(this.lanes)
-    console.log(this.stages)
-    console.log(this.stageList)
   }
 }
 </script>
