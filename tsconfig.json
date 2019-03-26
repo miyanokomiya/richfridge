@@ -25,9 +25,11 @@
     "strict": false,
     "noImplicitAny": false,
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
     "types": [
       "@types/node",
-      "@nuxt/vue-app"
+      "@nuxt/vue-app",
+      "jest"
     ]
   }
 }

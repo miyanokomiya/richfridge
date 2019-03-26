@@ -27,8 +27,10 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { db } from '@/plugins/firebase'
 import Logo from '@/components/Logo.vue'
 import HelloWorld from '@/components/HelloWorld.vue'
+import { Fridge, Lane, Stage, Item } from '@/plugins/models'
 
 @Component({
   components: {
@@ -36,7 +38,59 @@ import HelloWorld from '@/components/HelloWorld.vue'
     HelloWorld
   }
 })
-export default class Index extends Vue {}
+export default class Index extends Vue {
+  fridge: Fridge = null
+  items: { [key: string]: Item } = {}
+  lanes: { [key: string]: Lane } = {}
+  stages: { [key: string]: Stage } = {}
+
+  get stageList(): Array<Object> {
+    if (!this.fridge) return []
+    return this.fridge.stageOrder.map(id => this.stages[id])
+  }
+
+  mounted() {
+    this.load()
+  }
+
+  async load() {
+    const ref = db.doc('/fridges/KUl92YJbp3RNdFXKrGNk')
+    await ref.get().then(doc => {
+      this.fridge = Fridge.parse(doc.data())
+      return Promise.resolve()
+    })
+    await ref
+      .collection('items')
+      .get()
+      .then(query => {
+        query.forEach(doc => {
+          this.items[doc.id] = Item.parse(doc.data())
+        })
+      })
+    await ref
+      .collection('lanes')
+      .get()
+      .then(query => {
+        query.forEach(doc => {
+          this.lanes[doc.id] = Lane.parse(doc.data())
+        })
+      })
+    await ref
+      .collection('stages')
+      .get()
+      .then(query => {
+        query.forEach(doc => {
+          this.stages[doc.id] = Stage.parse(doc.data())
+        })
+      })
+
+    console.log(this.fridge)
+    console.log(this.items)
+    console.log(this.lanes)
+    console.log(this.stages)
+    console.log(this.stageList)
+  }
+}
 </script>
 
 <style>

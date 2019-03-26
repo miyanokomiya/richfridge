@@ -2,7 +2,8 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    node: true
+    node: true,
+    'jest/globals': true
   },
   parserOptions: {
     parser: 'babel-eslint',
@@ -18,10 +19,12 @@ module.exports = {
     'prettier/vue'
   ],
   plugins: [
-    'prettier'
+    'prettier',
+    'jest'
   ],
   // add your custom rules here
   rules: {
-    'nuxt/no-cjs-in-config': 'off'
+    'nuxt/no-cjs-in-config': 'off',
+    'no-console': 'off'
   }
 }
