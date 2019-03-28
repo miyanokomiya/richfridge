@@ -18,5 +18,6 @@ type Stage = {
 type Item = {
   id: string
   name: string
+  stageID: string
+  laneID: string
 }
-
