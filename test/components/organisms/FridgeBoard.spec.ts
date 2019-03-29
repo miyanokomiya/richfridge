@@ -8,9 +8,10 @@ describe('components/organisms/FridgeBoard', () => {
     laneOrder: ['bbb', 'aaa']
   })
 
-  const itemA = models.createItem({ stageID: 'aa' })
-  const itemB = models.createItem({ stageID: 'bb' })
-  const items = { a: itemA, b: itemB }
+  const itemA = models.createItem({ stageID: 'aa', laneID: 'aaa' })
+  const itemB = models.createItem({ stageID: 'bb', laneID: 'bbb' })
+  const itemC = models.createItem({ stageID: 'cc', laneID: 'aaa' })
+  const items = { a: itemA, b: itemB, c: itemC }
 
   const stageAA = models.createStage({ name: 'aa' })
   const stageBB = models.createStage({ name: 'bb' })
@@ -47,14 +48,33 @@ describe('components/organisms/FridgeBoard', () => {
   })
 
   describe('methods', () => {
-    describe('getItemIDListInStage', () => {
+    describe('getItemIDListAt', () => {
       const wrapper = mount<FridgeBoard>(FridgeBoard, {
         propsData: { fridge, items, stages, lanes }
       })
       const vm = wrapper.vm as any
 
-      test('stageID に対応する item 一覧を取得できること', () => {
-        expect(vm.getItemIDListInStage('aa')).toEqual(['a'])
+      describe('引数を省略を指定した場合', () => {
+        test('全item 一覧を取得できること', () => {
+          expect(vm.getItemIDListAt()).toEqual(['a', 'b', 'c'])
+        })
+      })
+      describe('stageID を指定した場合', () => {
+        test('stageID に対応する item 一覧を取得できること', () => {
+          expect(vm.getItemIDListAt({ stageID: 'cc' })).toEqual(['c'])
+        })
+      })
+      describe('laneID を指定した場合', () => {
+        test('laneID に対応する item 一覧を取得できること', () => {
+          expect(vm.getItemIDListAt({ laneID: 'aaa' })).toEqual(['a', 'c'])
+        })
+      })
+      describe('stageID laneID を指定した場合', () => {
+        test('stageID laneID に対応する item 一覧を取得できること', () => {
+          expect(vm.getItemIDListAt({ stageID: 'aa', laneID: 'aaa' })).toEqual([
+            'a'
+          ])
+        })
       })
     })
 

@@ -19,9 +19,6 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 @Component
 export default class Index extends Vue {
   @Prop({ required: true })
-  id: number
-
-  @Prop({ required: true })
   item!: Item
 
   @Emit()

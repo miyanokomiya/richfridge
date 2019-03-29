@@ -4,36 +4,59 @@
       {{ fridge.name }}
     </div>
     <div
-      class="whitespace-no-wrap overflow-auto p-1"
+      class="relative whitespace-no-wrap overflow-auto p-1"
       :style="{ height: 'calc(100% - 24px)' }"
     >
-      <div
-        v-for="stageID in fridge.stageOrder"
-        :key="stageID"
-        class="inline-block align-top border border-green-light mx-1 h-full"
-        :style="{ width: 'calc(60% - 24px)' }"
-      >
-        <template v-if="stages[stageID]">
-          <div
-            class="flex justify-around items-center"
-            :style="{ height: '24px' }"
-            @click="readyCreateItem({ stageID })"
-          >
-            <div>{{ stages[stageID].name }}</div>
-            <font-awesome-icon icon="plus-circle" />
-          </div>
-          <div class="p-1" :style="{ height: 'calc(100% - 24px)' }">
-            <ItemCard
-              v-for="itemID in getItemIDListInStage(stageID)"
-              :id="itemID"
-              :key="itemID"
-              :item="items[itemID]"
-              class="mx-1 mb-1"
-              @edit="readyUpdateItem(itemID)"
-              @shift="shiftItem(itemID)"
-            />
-          </div>
-        </template>
+      <div class="h-full">
+        <div
+          v-for="stageID in fridge.stageOrder"
+          :key="stageID"
+          class="inline-block align-top border border-green-light mx-1 h-full"
+          :style="{ width: 'calc(100vw - 2rem)' }"
+        >
+          <template v-if="stages[stageID]">
+            <div
+              class="flex justify-around items-center"
+              :style="{ height: '24px' }"
+              @click="readyCreateItem({ stageID })"
+            >
+              <div>{{ stages[stageID].name }}</div>
+              <font-awesome-icon icon="plus-circle" />
+            </div>
+            <div class="p-1" :style="{ height: 'calc(100% - 24px)' }"></div>
+          </template>
+        </div>
+      </div>
+      <div class="absolute pin-t" :style="{ padding: '24px 0 0' }">
+        <div
+          v-for="laneID in fridge.laneOrder"
+          :key="laneID"
+          class="mt-1 border border-red-light"
+        >
+          <template v-if="lanes[laneID]">
+            <div
+              class="fixed inline-flex items-center h-6 bg-green-lighter px-2"
+              :style="{ left: '0.25rem' }"
+            >
+              <div>{{ lanes[laneID].name }}</div>
+            </div>
+            <div
+              v-for="stageID in fridge.stageOrder"
+              :key="stageID"
+              class="inline-block align-top mx-1 mt-6 pt-1"
+              :style="{ width: 'calc(100vw - 2rem)' }"
+            >
+              <ItemCard
+                v-for="itemID in getItemIDListAt({ stageID, laneID })"
+                :key="itemID"
+                :item="items[itemID]"
+                class="mx-1 mb-1"
+                @edit="readyUpdateItem(itemID)"
+                @shift="shiftItem(itemID)"
+              />
+            </div>
+          </template>
+        </div>
       </div>
     </div>
     <ItemFormDialog
@@ -94,10 +117,15 @@ export default class Index extends Vue {
     return models.map2list<Lane>(this.lanes, this.fridge.laneOrder)
   }
 
-  getItemIDListInStage(stageID: string): string[] {
-    return Object.keys(this.items).filter(
-      itemID => this.items[itemID].stageID === stageID
-    )
+  getItemIDListAt(arg: { stageID?: string; laneID?: string } = {}): string[] {
+    let list = Object.keys(this.items)
+    if (arg.stageID) {
+      list = list.filter(itemID => this.items[itemID].stageID === arg.stageID)
+    }
+    if (arg.laneID) {
+      list = list.filter(itemID => this.items[itemID].laneID === arg.laneID)
+    }
+    return list
   }
 
   shiftItem(itemID: string) {
