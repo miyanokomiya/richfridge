@@ -29,6 +29,7 @@
               :key="itemID"
               :item="items[itemID]"
               class="mx-1 mb-1"
+              @edit="readyUpdateItem(itemID)"
               @shift="shiftItem(itemID)"
             />
           </div>
@@ -42,6 +43,7 @@
       :item="editingItem"
       @input="cancelEditItem"
       @create="createItem"
+      @update="updateItem"
     />
   </div>
 </template>
@@ -73,11 +75,13 @@ export default class Index extends Vue {
 
   @Emit('createItem')
   createItem(item: Item) {
-    this.editingItem = null
+    this.cancelEditItem()
   }
 
   @Emit('updateItem')
-  updateItem(itemID: string, item: Item) {}
+  updateItem(itemID: string, item: Item) {
+    this.cancelEditItem()
+  }
 
   editingItemID: string = ''
   editingItem: Item = null
@@ -109,6 +113,11 @@ export default class Index extends Vue {
 
   readyCreateItem({ stageID }) {
     this.editingItem = models.createItem({ stageID })
+  }
+
+  readyUpdateItem(itemID) {
+    this.editingItemID = itemID
+    this.editingItem = this.items[itemID]
   }
 
   cancelEditItem() {

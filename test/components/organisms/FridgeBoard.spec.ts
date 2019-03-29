@@ -47,43 +47,73 @@ describe('components/organisms/FridgeBoard', () => {
   })
 
   describe('methods', () => {
-    const wrapper = mount<FridgeBoard>(FridgeBoard, {
-      propsData: { fridge, items, stages, lanes }
-    })
-    const vm = wrapper.vm as any
-
     describe('getItemIDListInStage', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
       test('stageID に対応する item 一覧を取得できること', () => {
         expect(vm.getItemIDListInStage('aa')).toEqual(['a'])
       })
     })
 
     describe('shiftItem', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
       test('updateItem イベントが発行されること', () => {
         vm.shiftItem('a')
-        expect(wrapper.emitted('updateItem').length).toBe(1)
-        expect(wrapper.emitted('updateItem')[0]).toEqual([
-          'a',
-          {
-            ...itemA,
-            stageID: 'bb'
-          }
+        expect(wrapper.emitted('updateItem')).toEqual([
+          [
+            'a',
+            {
+              ...itemA,
+              stageID: 'bb'
+            }
+          ]
         ])
       })
     })
 
     describe('createItem', () => {
-      test('createItem イベントが発行され、 editingItem が null になること', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
+      test('createItem イベントが発行され、編集状態がクリアされること', () => {
         const item = models.createItem()
         vm.editingItem = item
         vm.createItem(item)
-        expect(wrapper.emitted('createItem').length).toBe(1)
-        expect(wrapper.emitted('createItem')[0]).toEqual([item])
+        expect(wrapper.emitted('createItem')).toEqual([[item]])
+        expect(vm.editingItem).toBeNull()
+      })
+    })
+
+    describe('updateItem', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
+      test('updateItem イベントが発行され、編集状態がクリアされること', () => {
+        const item = models.createItem()
+        vm.editingItem = item
+        vm.updateItem('a', item)
+        expect(wrapper.emitted('updateItem')).toEqual([['a', item]])
         expect(vm.editingItem).toBeNull()
       })
     })
 
     describe('readyCreateItem', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
       test('editingItem に item がセットされること', () => {
         vm.readyCreateItem({ stageID: 'cc' })
         expect(vm.editingItem).toEqual(models.createItem({ stageID: 'cc' }))
@@ -91,6 +121,11 @@ describe('components/organisms/FridgeBoard', () => {
     })
 
     describe('cancelEditItem', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
       test('editingItem が null、editingItemID が 空文字 になること', () => {
         vm.editingItem = models.createItem()
         vm.editingItemID = 'dd'

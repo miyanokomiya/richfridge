@@ -24,8 +24,7 @@ describe('components/atoms/forms/ValidTextInput', () => {
         })
         const vm = wrapper.vm as any
         vm.valueDraft = 'a'
-        expect(wrapper.emitted('input').length).toBe(1)
-        expect(wrapper.emitted('input')[0]).toEqual(['a'])
+        expect(wrapper.emitted('input')).toEqual([['a']])
       })
     })
   })

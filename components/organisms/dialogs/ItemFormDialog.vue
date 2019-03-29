@@ -48,7 +48,7 @@ export default class ItemFormDialog extends Vue {
   create(item: Item) {}
 
   @Emit()
-  update(item: Item) {}
+  update(itemID: string, item: Item) {}
 
   @Emit()
   delete(item: Item) {}
@@ -64,7 +64,9 @@ export default class ItemFormDialog extends Vue {
   }
 
   submit() {
-    this.existed ? this.update(this.itemDraft) : this.create(this.itemDraft)
+    this.existed
+      ? this.update(this.itemID, this.itemDraft)
+      : this.create(this.itemDraft)
   }
 }
 </script>

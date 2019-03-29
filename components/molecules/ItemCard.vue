@@ -1,13 +1,15 @@
 <template>
   <div
-    class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white py-1 px-1 border border-blue hover:border-transparent rounded flex"
+    class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white py-1 px-1 border border-blue hover:border-transparent rounded"
   >
-    <template v-if="item">
-      <span>{{ item.name }}</span>
-      <button class="ml-auto pl-4" @click="shift">
+    <div v-if="item" class="flex items-center">
+      <div :style="{ width: 'calc(100% - 24px)' }" @click="edit">
+        <span>{{ item.name }}</span>
+      </div>
+      <button class="ml-auto" :style="{ width: '24px' }" @click="shift">
         <font-awesome-icon icon="angle-right" />
       </button>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -21,6 +23,9 @@ export default class Index extends Vue {
 
   @Prop({ required: true })
   item!: Item
+
+  @Emit()
+  edit() {}
 
   @Emit()
   shift() {}
