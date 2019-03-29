@@ -48,8 +48,8 @@ export default class ItemFormDialog extends Vue {
   @Prop({ required: true })
   item: Item
 
-  @Prop({ required: true })
-  lanes!: { [key: string]: Lane }
+  @Prop({ default: () => ({}) })
+  lanes: { [key: string]: Lane }
 
   @Emit()
   input(value: boolean) {}

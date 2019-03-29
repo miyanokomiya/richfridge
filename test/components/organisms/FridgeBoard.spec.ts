@@ -79,12 +79,12 @@ describe('components/organisms/FridgeBoard', () => {
     })
 
     describe('shiftItem', () => {
-      const wrapper = mount<FridgeBoard>(FridgeBoard, {
-        propsData: { fridge, items, stages, lanes }
-      })
-      const vm = wrapper.vm as any
-
       test('updateItem イベントが発行されること', () => {
+        const wrapper = mount<FridgeBoard>(FridgeBoard, {
+          propsData: { fridge, items, stages, lanes }
+        })
+        const vm = wrapper.vm as any
+
         vm.shiftItem('a')
         expect(wrapper.emitted('updateItem')).toEqual([
           [
@@ -99,13 +99,13 @@ describe('components/organisms/FridgeBoard', () => {
     })
 
     describe('createItem', () => {
-      const wrapper = mount<FridgeBoard>(FridgeBoard, {
-        propsData: { fridge, items, stages, lanes }
-      })
-      const vm = wrapper.vm as any
-
       test('createItem イベントが発行され、編集状態がクリアされること', () => {
+        const wrapper = mount<FridgeBoard>(FridgeBoard, {
+          propsData: { fridge, items, stages, lanes }
+        })
+        const vm = wrapper.vm as any
         const item = models.createItem()
+
         vm.editingItem = item
         vm.createItem(item)
         expect(wrapper.emitted('createItem')).toEqual([[item]])
@@ -129,24 +129,24 @@ describe('components/organisms/FridgeBoard', () => {
     })
 
     describe('readyCreateItem', () => {
-      const wrapper = mount<FridgeBoard>(FridgeBoard, {
-        propsData: { fridge, items, stages, lanes }
-      })
-      const vm = wrapper.vm as any
-
       test('editingItem に item がセットされること', () => {
+        const wrapper = mount<FridgeBoard>(FridgeBoard, {
+          propsData: { fridge, items, stages, lanes }
+        })
+        const vm = wrapper.vm as any
         vm.readyCreateItem({ stageID: 'cc' })
-        expect(vm.editingItem).toEqual(models.createItem({ stageID: 'cc' }))
+        expect(vm.editingItem).toEqual(
+          models.createItem({ stageID: 'cc', laneID: 'bbb' })
+        )
       })
     })
 
     describe('cancelEditItem', () => {
-      const wrapper = mount<FridgeBoard>(FridgeBoard, {
-        propsData: { fridge, items, stages, lanes }
-      })
-      const vm = wrapper.vm as any
-
       test('editingItem が null、editingItemID が 空文字 になること', () => {
+        const wrapper = mount<FridgeBoard>(FridgeBoard, {
+          propsData: { fridge, items, stages, lanes }
+        })
+        const vm = wrapper.vm as any
         vm.editingItem = models.createItem()
         vm.editingItemID = 'dd'
         vm.cancelEditItem()
