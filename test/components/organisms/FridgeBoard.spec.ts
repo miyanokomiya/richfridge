@@ -55,7 +55,7 @@ describe('components/organisms/FridgeBoard', () => {
       const vm = wrapper.vm as any
 
       describe('引数を省略を指定した場合', () => {
-        test('全item 一覧を取得できること', () => {
+        test('全item一覧を取得できること', () => {
           expect(vm.getItemIDListAt()).toEqual(['a', 'b', 'c'])
         })
       })

@@ -27,7 +27,7 @@
           </template>
         </div>
       </div>
-      <div class="absolute pin-t" :style="{ padding: '24px 0 0' }">
+      <div class="absolute" :style="{ top: '28px' }">
         <div
           v-for="laneID in fridge.laneOrder"
           :key="laneID"
@@ -64,6 +64,7 @@
       :value="!!editingItem"
       :itemID="editingItemID"
       :item="editingItem"
+      :lanes="lanes"
       @input="cancelEditItem"
       @create="createItem"
       @update="updateItem"
@@ -140,7 +141,10 @@ export default class Index extends Vue {
   }
 
   readyCreateItem({ stageID }) {
-    this.editingItem = models.createItem({ stageID })
+    this.editingItem = models.createItem({
+      stageID,
+      laneID: this.fridge.laneOrder[0]
+    })
   }
 
   readyUpdateItem(itemID) {

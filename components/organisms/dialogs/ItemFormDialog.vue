@@ -2,6 +2,11 @@
   <BaseDialog :value="value" @input="input">
     <form v-if="itemDraft" @submit.prevent="submit">
       <ValidTextInput v-model="itemDraft.name" label="Name" />
+      <SelectInput
+        v-model="itemDraft.laneID"
+        class="mt-2"
+        :optionList="optionList"
+      />
       <div class="flex justify-end mt-2">
         <button
           type="button"
@@ -24,11 +29,13 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import BaseDialog from '@/components/organisms/dialogs/BaseDialog.vue'
 import ValidTextInput from '@/components/atoms/forms/ValidTextInput.vue'
+import SelectInput from '@/components/atoms/forms/SelectInput.vue'
 
 @Component({
   components: {
     BaseDialog,
-    ValidTextInput
+    ValidTextInput,
+    SelectInput
   }
 })
 export default class ItemFormDialog extends Vue {
@@ -40,6 +47,9 @@ export default class ItemFormDialog extends Vue {
 
   @Prop({ required: true })
   item: Item
+
+  @Prop({ required: true })
+  lanes!: { [key: string]: Lane }
 
   @Emit()
   input(value: boolean) {}
@@ -57,6 +67,13 @@ export default class ItemFormDialog extends Vue {
 
   get existed(): boolean {
     return !!this.itemID
+  }
+
+  get optionList(): { label: string; value: any }[] {
+    return Object.keys(this.lanes).map(laneID => ({
+      value: laneID,
+      label: this.lanes[laneID].name
+    }))
   }
 
   mounted() {
