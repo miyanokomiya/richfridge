@@ -27,11 +27,7 @@ export default {
   css: ['~/assets/css/tailwind.css'],
 
   plugins: [],
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    'nuxt-fontawesome'
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-fontawesome'],
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
   },
@@ -53,14 +49,15 @@ export default {
      */
     extend(config, ctx) {
       // Run ESLint on save
-      if (ctx.isDev && ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-      }
+      // build速度が20倍くらい違うので外す
+      // if (ctx.isDev && ctx.isClient) {
+      //   config.module.rules.push({
+      //     enforce: 'pre',
+      //     test: /\.(js|vue)$/,
+      //     loader: 'eslint-loader',
+      //     exclude: /(node_modules)/
+      //   })
+      // }
     }
   }
 }
