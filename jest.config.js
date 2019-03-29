@@ -17,6 +17,11 @@ module.exports = {
     }
   },
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/.nuxt/',
+    '<rootDir>/coverage/'
+  ],
   collectCoverage: false,
   collectCoverageFrom: [
     '<rootDir>/components/**/*.vue',

@@ -1,4 +1,4 @@
-FROM node:8.15.1-alpine
+FROM node:11.12.0-alpine
 WORKDIR /app
 ENV HOST 0.0.0.0
 EXPOSE 3000
