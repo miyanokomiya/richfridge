@@ -13,7 +13,7 @@
         <button
           class="ml-4 bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
         >
-          Create
+          {{ existed ? 'Update' : 'Create' }}
         </button>
       </div>
     </form>
