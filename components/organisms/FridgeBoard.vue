@@ -17,7 +17,7 @@
           <div
             class="flex justify-around items-center"
             :style="{ height: '24px' }"
-            @click="newItem({ stageID })"
+            @click="readyCreateItem({ stageID })"
           >
             <div>{{ stages[stageID].name }}</div>
             <font-awesome-icon icon="plus-circle" />
@@ -35,6 +35,14 @@
         </template>
       </div>
     </div>
+    <ItemFormDialog
+      v-if="editingItem"
+      :value="!!editingItem"
+      :itemID="editingItemID"
+      :item="editingItem"
+      @input="cancelEditItem"
+      @create="createItem"
+    />
   </div>
 </template>
 
@@ -42,10 +50,12 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import * as models from '@/plugins/models.ts'
 import ItemCard from '@/components/molecules/ItemCard.vue'
+import ItemFormDialog from '@/components/organisms/dialogs/ItemFormDialog.vue'
 
 @Component({
   components: {
-    ItemCard
+    ItemCard,
+    ItemFormDialog
   }
 })
 export default class Index extends Vue {
@@ -62,10 +72,15 @@ export default class Index extends Vue {
   stages!: { [key: string]: Stage }
 
   @Emit('createItem')
-  createItem(item: Item) {}
+  createItem(item: Item) {
+    this.editingItem = null
+  }
 
   @Emit('updateItem')
   updateItem(itemID: string, item: Item) {}
+
+  editingItemID: string = ''
+  editingItem: Item = null
 
   get stageList(): Stage[] {
     return models.map2list<Stage>(this.stages, this.fridge.stageOrder)
@@ -92,9 +107,13 @@ export default class Index extends Vue {
     })
   }
 
-  newItem({ stageID }) {
-    const item = models.createItem({ stageID })
-    this.createItem(item)
+  readyCreateItem({ stageID }) {
+    this.editingItem = models.createItem({ stageID })
+  }
+
+  cancelEditItem() {
+    this.editingItemID = ''
+    this.editingItem = null
   }
 }
 </script>

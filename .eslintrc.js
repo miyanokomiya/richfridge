@@ -22,6 +22,7 @@ module.exports = {
   plugins: ['prettier', '@typescript-eslint', 'jest'],
   rules: {
     'nuxt/no-cjs-in-config': 'off',
-    'no-console': 'off'
+    'no-console': 'off',
+    "vue/attribute-hyphenation": ["error", "never"]
   }
 }
