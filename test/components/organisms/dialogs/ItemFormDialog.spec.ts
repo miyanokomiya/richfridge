@@ -27,4 +27,29 @@ describe('components/organisms/dialogs/ItemFormDialog', () => {
       })
     })
   })
+
+  describe('methods', () => {
+    describe('submit', () => {
+      describe('existed = true のとき', () => {
+        const wrapper = mount(ItemFormDialog, {
+          computed: { existed: () => true }
+        })
+        const vm = wrapper.vm as any
+        test('update イベントが発行されること', () => {
+          vm.submit()
+          expect(wrapper.emitted('update').length).toBe(1)
+        })
+      })
+      describe('existed = false のとき', () => {
+        const wrapper = mount(ItemFormDialog, {
+          computed: { existed: () => false }
+        })
+        const vm = wrapper.vm as any
+        test('create イベントが発行されること', () => {
+          vm.submit()
+          expect(wrapper.emitted('create').length).toBe(1)
+        })
+      })
+    })
+  })
 })
