@@ -68,12 +68,10 @@ export default class Index extends Vue {
   updateItem(itemID: string, item: Item) {}
 
   get stageList(): Stage[] {
-    if (!this.fridge) return []
     return models.map2list<Stage>(this.stages, this.fridge.stageOrder)
   }
 
   get laneList(): Lane[] {
-    if (!this.fridge) return []
     return models.map2list<Lane>(this.lanes, this.fridge.laneOrder)
   }
 
@@ -96,8 +94,7 @@ export default class Index extends Vue {
 
   newItem({ stageID }) {
     const item = models.createItem({ stageID })
-    console.log(item)
-    // this.createItem(item)
+    this.createItem(item)
   }
 }
 </script>

@@ -57,5 +57,29 @@ describe('components/organisms/FridgeBoard', () => {
         expect(vm.getItemIDListInStage('aa')).toEqual(['a'])
       })
     })
+
+    describe('shiftItem', () => {
+      test('updateItem イベントが発行されること', () => {
+        vm.shiftItem('a')
+        expect(wrapper.emitted('updateItem').length).toBe(1)
+        expect(wrapper.emitted('updateItem')[0]).toEqual([
+          'a',
+          {
+            ...itemA,
+            stageID: 'bb'
+          }
+        ])
+      })
+    })
+
+    describe('newItem', () => {
+      test('createItem イベントが発行されること', () => {
+        vm.newItem({ stageID: 'cc' })
+        expect(wrapper.emitted('createItem').length).toBe(1)
+        expect(wrapper.emitted('createItem')[0]).toEqual([
+          models.createItem({ stageID: 'cc' })
+        ])
+      })
+    })
   })
 })
