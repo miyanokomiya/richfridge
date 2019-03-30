@@ -108,4 +108,69 @@ describe('models', () => {
       ])
     })
   })
+
+  describe('convertTmpID', () => {
+    const getLaneID = () => 'lane_id'
+    const getStageID = () => 'stage_id'
+
+    test('lanes の一時IDを変換すること', () => {
+      const fridge = models.createFridge({ laneOrder: ['NEW_a', 'b'] })
+      const lanes = {
+        NEW_a: models.createLane(),
+        b: models.createLane()
+      }
+      const result = models.convertTmpID({
+        fridge,
+        lanes,
+        stages: {},
+        getLaneID,
+        getStageID
+      })
+      expect(result.fridge.laneOrder).toEqual(['lane_id', 'b'])
+      expect(result.lanes).toHaveProperty('lane_id')
+      expect(result.lanes).not.toHaveProperty('NEW_a')
+    })
+
+    test('stages の一時IDを変換すること', () => {
+      const fridge = models.createFridge({ stageOrder: ['NEW_a', 'b'] })
+      const stages = {
+        NEW_a: models.createLane(),
+        b: models.createLane()
+      }
+      const result = models.convertTmpID({
+        fridge,
+        lanes: {},
+        stages,
+        getLaneID,
+        getStageID
+      })
+      expect(result.fridge.stageOrder).toEqual(['stage_id', 'b'])
+      expect(result.stages).toHaveProperty('stage_id')
+      expect(result.stages).not.toHaveProperty('NEW_a')
+    })
+  })
+
+  describe('getRemovedItemIDList', () => {
+    test('所属する lane がない item のid一覧を取得すること', () => {
+      const items = {
+        a: models.createItem({ stageID: 'aa', laneID: 'aaa' }),
+        b: models.createItem({ stageID: 'aa', laneID: 'bbb' })
+      }
+      const stages = { aa: models.createLane() }
+      const lanes = { aaa: models.createLane() }
+      const result = models.getRemovedItemIDList({ items, lanes, stages })
+      expect(result).toEqual(['b'])
+    })
+
+    test('所属する stage がない item のid一覧を取得すること', () => {
+      const items = {
+        a: models.createItem({ stageID: 'aa', laneID: 'aaa' }),
+        b: models.createItem({ stageID: 'bb', laneID: 'aaa' })
+      }
+      const stages = { aa: models.createLane() }
+      const lanes = { aaa: models.createLane() }
+      const result = models.getRemovedItemIDList({ items, lanes, stages })
+      expect(result).toEqual(['b'])
+    })
+  })
 })

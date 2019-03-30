@@ -56,3 +56,60 @@ export function getOptionList(
     label: map[key].name
   }))
 }
+
+export function getTmpID() {
+  return `NEW_${Math.random()}`
+}
+
+export function convertTmpID(arg: {
+  fridge: Fridge
+  lanes: Lanes
+  stages: Stages
+  getStageID: () => string
+  getLaneID: () => string
+}): {
+  fridge: Fridge
+  lanes: Lanes
+  stages: Stages
+} {
+  const fridge = clone<Fridge>(arg.fridge)
+
+  // 新規作成された lane のIDを調整
+  const lanes = Object.keys(arg.lanes).reduce((map, laneID) => {
+    let validID = laneID
+    if (laneID.indexOf('NEW_') === 0) {
+      validID = arg.getLaneID()
+      fridge.laneOrder[fridge.laneOrder.indexOf(laneID)] = validID
+    }
+    map[validID] = arg.lanes[laneID]
+    return map
+  }, {})
+
+  // 新規作成された stage のIDを調整
+  const stages = Object.keys(arg.stages).reduce((map, stageID) => {
+    let validID = stageID
+    if (stageID.indexOf('NEW_') === 0) {
+      validID = arg.getStageID()
+      fridge.stageOrder[fridge.stageOrder.indexOf(stageID)] = validID
+    }
+    map[validID] = arg.stages[stageID]
+    return map
+  }, {})
+
+  return {
+    fridge,
+    lanes,
+    stages
+  }
+}
+
+export function getRemovedItemIDList(arg: {
+  items: Items
+  lanes: Lanes
+  stages: Stages
+}): string[] {
+  return Object.keys(arg.items).filter(itemID => {
+    const item = arg.items[itemID]
+    return !(item.laneID in arg.lanes && item.stageID in arg.stages)
+  })
+}

@@ -12,6 +12,7 @@
             @remove="removeLane(laneID)"
           />
         </div>
+        <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane" />
       </div>
       <div v-else>
         <div
@@ -25,6 +26,7 @@
             @remove="removeStage(stageID)"
           />
         </div>
+        <FlatIconButton class="mt-2" icon="plus-circle" @click="addStage" />
       </div>
       <div class="flex justify-end mt-2">
         <BaseButton color="white" @click="input(false)">Cancel</BaseButton>
@@ -41,6 +43,7 @@ import BaseDialog from '@/components/organisms/dialogs/BaseDialog.vue'
 import SelectInput from '@/components/atoms/forms/SelectInput.vue'
 import NavigationTabs from '@/components/molecules/NavigationTabs.vue'
 import BaseButton from '@/components/atoms/forms/BaseButton.vue'
+import FlatIconButton from '@/components/atoms/forms/FlatIconButton.vue'
 import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vue'
 
 @Component({
@@ -49,6 +52,7 @@ import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vu
     SelectInput,
     NavigationTabs,
     BaseButton,
+    FlatIconButton,
     SortableTextInput
   }
 })
@@ -87,6 +91,18 @@ export default class ItemFormDialog extends Vue {
     this.fridgeDraft = models.clone<Fridge>(this.fridge)
     this.lanesDraft = models.clone<Lanes>(this.lanes)
     this.stagesDraft = models.clone<Stages>(this.stages)
+  }
+
+  addLane() {
+    const laneID = `NEW_${Math.random()}`
+    this.fridgeDraft.laneOrder.push(laneID)
+    Vue.set(this.lanesDraft, laneID, models.createLane())
+  }
+
+  addStage() {
+    const stageID = `NEW_${Math.random()}`
+    this.fridgeDraft.stageOrder.push(stageID)
+    Vue.set(this.stagesDraft, stageID, models.createStage())
   }
 
   removeLane(laneID: string) {

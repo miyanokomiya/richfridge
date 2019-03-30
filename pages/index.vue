@@ -15,6 +15,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { db } from '@/plugins/firebase'
+import * as models from '@/plugins/models.ts'
 import FridgeBoard from '@/components/organisms/FridgeBoard.vue'
 
 const ref = db.doc('/fridges/KUl92YJbp3RNdFXKrGNk')
@@ -61,9 +62,30 @@ export default class Index extends Vue {
   }
 
   updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
-    console.log(arg)
+    const { fridge, lanes, stages } = models.convertTmpID({
+      ...arg,
+      getLaneID: () => ref.collection('lanes').doc().id,
+      getStageID: () => ref.collection('stages').doc().id
+    })
+
+    const removedItemIDList = models.getRemovedItemIDList({
+      items: this.items,
+      lanes: arg.lanes,
+      stages: arg.stages
+    })
+
+    const batch = db.batch()
+    batch.set(ref, fridge)
+    Object.keys(lanes).forEach(laneID => {
+      batch.set(ref.collection('lanes').doc(laneID), lanes[laneID])
+    })
+    Object.keys(stages).forEach(stageID => {
+      batch.set(ref.collection('stages').doc(stageID), stages[stageID])
+    })
+    removedItemIDList.forEach(itemID => {
+      batch.delete(ref.collection('items').doc(itemID))
+    })
+    batch.commit()
   }
 }
 </script>
-
-<style></style>
