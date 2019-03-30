@@ -13,18 +13,10 @@
         :optionList="stageOptionList"
       />
       <div class="flex justify-end mt-2">
-        <button
-          type="button"
-          class="bg-white hover:bg-grey-lightest text-grey-darkest font-bold py-2 px-4 rounded"
-          @click="input(false)"
-        >
-          Cancel
-        </button>
-        <button
-          class="ml-4 bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded"
-        >
+        <BaseButton color="white" @click="input(false)">Cancel</BaseButton>
+        <BaseButton class="ml-4" @click="submit">
           {{ existed ? 'Update' : 'Create' }}
-        </button>
+        </BaseButton>
       </div>
     </form>
   </BaseDialog>
@@ -36,12 +28,14 @@ import * as models from '@/plugins/models'
 import BaseDialog from '@/components/organisms/dialogs/BaseDialog.vue'
 import ValidTextInput from '@/components/atoms/forms/ValidTextInput.vue'
 import SelectInput from '@/components/atoms/forms/SelectInput.vue'
+import BaseButton from '@/components/atoms/forms/BaseButton.vue'
 
 @Component({
   components: {
     BaseDialog,
     ValidTextInput,
-    SelectInput
+    SelectInput,
+    BaseButton
   }
 })
 export default class ItemFormDialog extends Vue {

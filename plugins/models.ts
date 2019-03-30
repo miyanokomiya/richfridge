@@ -30,6 +30,10 @@ export function createItem(arg: Partial<Item> = {}): Item {
   }
 }
 
+export function clone<T>(src: T): T {
+  return JSON.parse(JSON.stringify(src))
+}
+
 export function map2list<T>(map: { [key: string]: T }, order: string[]): T[] {
   return order.map(key => map[key])
 }

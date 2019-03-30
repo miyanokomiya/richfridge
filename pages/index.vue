@@ -7,6 +7,7 @@
       :stages="stages"
       @createItem="createItem"
       @updateItem="updateItem"
+      @updateFridge="updateFridge"
     />
   </section>
 </template>
@@ -25,9 +26,9 @@ const ref = db.doc('/fridges/KUl92YJbp3RNdFXKrGNk')
 })
 export default class Index extends Vue {
   fridge: Fridge = null
-  items: { [key: string]: Item } = {}
-  lanes: { [key: string]: Lane } = {}
-  stages: { [key: string]: Stage } = {}
+  items: Items = {}
+  lanes: Lanes = {}
+  stages: Stages = {}
 
   mounted() {
     this.attach()
@@ -57,6 +58,10 @@ export default class Index extends Vue {
       .collection('items')
       .doc(itemID)
       .set(item)
+  }
+
+  updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
+    console.log(arg)
   }
 }
 </script>

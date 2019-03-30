@@ -1,6 +1,10 @@
 <template>
   <div v-if="fridge" class="h-full">
-    <div class="flex items-center" :style="{ height: '24px' }">
+    <div
+      class="flex items-center"
+      :style="{ height: '24px' }"
+      @click="() => (editingFridge = true)"
+    >
       {{ fridge.name }}
     </div>
     <div
@@ -71,6 +75,15 @@
       @create="createItem"
       @update="updateItem"
     />
+    <FridgeFormDialog
+      v-if="editingFridge"
+      :value="editingFridge"
+      :fridge="fridge"
+      :lanes="lanes"
+      :stages="stages"
+      @input="() => (editingFridge = false)"
+      @update="updateFridge"
+    />
   </div>
 </template>
 
@@ -79,11 +92,13 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import * as models from '@/plugins/models.ts'
 import ItemCard from '@/components/molecules/ItemCard.vue'
 import ItemFormDialog from '@/components/organisms/dialogs/ItemFormDialog.vue'
+import FridgeFormDialog from '@/components/organisms/dialogs/FridgeFormDialog.vue'
 
 @Component({
   components: {
     ItemCard,
-    ItemFormDialog
+    ItemFormDialog,
+    FridgeFormDialog
   }
 })
 export default class Index extends Vue {
@@ -91,13 +106,13 @@ export default class Index extends Vue {
   fridge!: Fridge
 
   @Prop({ required: true })
-  items!: { [key: string]: Item }
+  items!: Items
 
   @Prop({ required: true })
-  lanes!: { [key: string]: Lane }
+  lanes!: Lanes
 
   @Prop({ required: true })
-  stages!: { [key: string]: Stage }
+  stages!: Stages
 
   @Emit('createItem')
   createItem(item: Item) {
@@ -109,8 +124,14 @@ export default class Index extends Vue {
     this.cancelEditItem()
   }
 
+  @Emit('updateFridge')
+  updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
+    this.editingFridge = false
+  }
+
   editingItemID: string = ''
   editingItem: Item = null
+  editingFridge: boolean = false
 
   get stageList(): Stage[] {
     return models.map2list<Stage>(this.stages, this.fridge.stageOrder)

@@ -5,7 +5,7 @@
     @click.self="input(false)"
   >
     <div
-      class="fixed shadow-inner max-w-md md:relative pin-t pin-x align-top m-auto justify-end md:justify-center p-8 bg-white md:rounded w-full md:h-auto md:shadow flex flex-col"
+      class="fixed shadow-inner max-w-md md:relative pin-t pin-x align-top m-auto justify-end md:justify-center pt-8 pb-4 px-4 bg-white md:rounded w-full md:h-auto md:shadow flex flex-col"
     >
       <slot />
       <span class="absolute pin-t pin-r pt-4 px-4" @click="input(false)">
