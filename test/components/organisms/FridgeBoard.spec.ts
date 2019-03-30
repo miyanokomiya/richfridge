@@ -124,15 +124,29 @@ describe('components/organisms/FridgeBoard', () => {
     })
 
     describe('readyCreateItem', () => {
-      test('editingItem に item がセットされること', () => {
-        const wrapper = mount<FridgeBoard>(FridgeBoard, {
-          propsData: { fridge, items, stages, lanes }
+      describe('stageID laneID を指定した場合', () => {
+        test('editingItem に item がセットされること', () => {
+          const wrapper = mount<FridgeBoard>(FridgeBoard, {
+            propsData: { fridge, items, stages, lanes }
+          })
+          const vm = wrapper.vm as any
+          vm.readyCreateItem({ stageID: 'cc', laneID: 'ccc' })
+          expect(vm.editingItem).toEqual(
+            models.createItem({ stageID: 'cc', laneID: 'ccc' })
+          )
         })
-        const vm = wrapper.vm as any
-        vm.readyCreateItem({ stageID: 'cc' })
-        expect(vm.editingItem).toEqual(
-          models.createItem({ stageID: 'cc', laneID: 'bbb' })
-        )
+      })
+      describe('stageID laneID を省略した場合', () => {
+        test('初期値がセットされること', () => {
+          const wrapper = mount<FridgeBoard>(FridgeBoard, {
+            propsData: { fridge, items, stages, lanes }
+          })
+          const vm = wrapper.vm as any
+          vm.readyCreateItem()
+          expect(vm.editingItem).toEqual(
+            models.createItem({ stageID: 'bb', laneID: 'bbb' })
+          )
+        })
       })
     })
 

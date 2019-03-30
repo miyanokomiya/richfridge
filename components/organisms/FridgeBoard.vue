@@ -16,16 +16,14 @@
           v-for="stageID in fridge.stageOrder"
           :key="stageID"
           class="inline-block align-top border border-green-light mx-1 h-full"
-          :style="{ width: 'calc(100vw - 2rem)' }"
+          :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
         >
           <template v-if="stages[stageID]">
             <div
               class="flex justify-around items-center"
               :style="{ height: '24px' }"
-              @click="readyCreateItem({ stageID })"
             >
               <div>{{ stages[stageID].name }}</div>
-              <font-awesome-icon icon="plus-circle" />
             </div>
             <div class="p-1" :style="{ height: 'calc(100% - 24px)' }"></div>
           </template>
@@ -48,7 +46,7 @@
               v-for="stageID in fridge.stageOrder"
               :key="stageID"
               class="inline-block align-top mx-1 mt-6 pt-1"
-              :style="{ width: 'calc(100vw - 2rem)' }"
+              :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
             >
               <ItemCard
                 v-for="itemID in getItemIDListAt({ stageID, laneID })"
@@ -57,6 +55,11 @@
                 class="mx-1 mb-1"
                 @edit="readyUpdateItem(itemID)"
                 @shift="shiftItem(itemID)"
+              />
+              <FlatIconButton
+                class="mt-2 mb-1"
+                icon="plus-circle"
+                @click="readyCreateItem({ stageID, laneID })"
               />
             </div>
           </template>
@@ -93,12 +96,14 @@ import * as models from '@/plugins/models.ts'
 import ItemCard from '@/components/molecules/ItemCard.vue'
 import ItemFormDialog from '@/components/organisms/dialogs/ItemFormDialog.vue'
 import FridgeFormDialog from '@/components/organisms/dialogs/FridgeFormDialog.vue'
+import FlatIconButton from '@/components/atoms/forms/FlatIconButton.vue'
 
 @Component({
   components: {
     ItemCard,
     ItemFormDialog,
-    FridgeFormDialog
+    FridgeFormDialog,
+    FlatIconButton
   }
 })
 export default class Index extends Vue {
@@ -163,10 +168,10 @@ export default class Index extends Vue {
     })
   }
 
-  readyCreateItem({ stageID }) {
+  readyCreateItem(arg: { stageID?: string; laneID?: string } = {}) {
     this.editingItem = models.createItem({
-      stageID,
-      laneID: this.fridge.laneOrder[0]
+      stageID: arg.stageID || this.fridge.stageOrder[0],
+      laneID: arg.laneID || this.fridge.laneOrder[0]
     })
   }
 
