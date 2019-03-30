@@ -22,7 +22,8 @@ export default class BaseButton extends Vue {
 
   get klass(): string {
     if (this.color === 'white')
-      return 'bg-white hover:bg-grey-lightest text-grey-darkest'
+      return 'bg-white hover:bg-grey-lightest text-grey-darkest border'
+    if (this.color === 'red') return 'bg-red hover:bg-red-lightest text-white'
     return 'bg-blue hover:bg-blue-dark text-white'
   }
 }

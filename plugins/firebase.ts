@@ -1,5 +1,6 @@
+import Vue from 'vue'
 import * as firebase from 'firebase/app'
-// import 'firebase/auth'
+import 'firebase/auth'
 import 'firebase/firestore'
 
 if (!firebase.apps.length) {
@@ -13,11 +14,41 @@ if (!firebase.apps.length) {
   })
 }
 
+const authState = {
+  user: null,
+  needAuth: true,
+  loaded: false
+}
+
+Vue.use({
+  install: function(Vue, options) {
+    ;(Vue as any).util.defineReactive(Vue.prototype, '$auth', authState)
+  }
+})
+
+async function tryAuth() {
+  try {
+    const result = await firebase.auth().getRedirectResult()
+    console.log(result.user)
+    authState.user = result.user
+  } catch (e) {
+    console.log(e)
+  }
+  authState.loaded = true
+}
+tryAuth()
+
+export function signInWithRedirect() {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  firebase.auth().signInWithRedirect(provider)
+}
+
+export function signOut() {
+  return firebase
+    .auth()
+    .signOut()
+    .catch(console.log)
+}
+
 export default firebase
 export const db = firebase.firestore()
-
-// export default (context, inject) => {
-//   firebase.auth().onAuthStateChanged(function(user) {
-//     context.app.store.commit('setUser', user)
-//   })
-// }

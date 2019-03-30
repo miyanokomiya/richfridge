@@ -1,6 +1,13 @@
 <template>
   <section class="container h-full">
+    <div v-if="$auth.needAuth && !$auth.user" class="text-center">
+      <p class="my-4">認証が必要です</p>
+      <button @click="signInWithRedirect">
+        <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
+      </button>
+    </div>
     <FridgeBoard
+      v-else
       :fridge="fridge"
       :items="items"
       :lanes="lanes"
@@ -14,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { db } from '@/plugins/firebase'
+import { db, signInWithRedirect } from '@/plugins/firebase'
 import * as models from '@/plugins/models.ts'
 import FridgeBoard from '@/components/organisms/FridgeBoard.vue'
 
@@ -86,6 +93,10 @@ export default class Index extends Vue {
       batch.delete(ref.collection('items').doc(itemID))
     })
     batch.commit()
+  }
+
+  signInWithRedirect() {
+    signInWithRedirect()
   }
 }
 </script>

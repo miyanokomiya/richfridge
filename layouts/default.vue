@@ -1,8 +1,52 @@
 <template>
   <div class="h-screen">
-    <nuxt />
+    <div
+      class="flex items-center justify-between flex-wrap bg-teal px-2"
+      :style="{ height: '2rem' }"
+    >
+      <font-awesome-icon icon="home" class="text-white hover:text-grey" />
+      <div
+        v-if="$auth.user"
+        class="text-white hover:text-grey font-semibold"
+        @click="() => (showUserConfig = true)"
+      >
+        {{ $auth.user.displayName }}
+      </div>
+    </div>
+    <div class="" :style="{ height: 'calc(100% - 2rem)' }">
+      <nuxt />
+    </div>
+    <UserConfigDialog
+      v-model="showUserConfig"
+      @signOut="signOut"
+      @deleteAccount="deleteAccount"
+    />
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import { signOut } from '@/plugins/firebase'
+import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
+
+@Component({
+  components: {
+    UserConfigDialog
+  }
+})
+export default class Default extends Vue {
+  showUserConfig: boolean = false
+
+  async signOut() {
+    await signOut()
+    location.reload()
+  }
+
+  deleteAccount() {
+    // TODO
+  }
+}
+</script>
 
 <style>
 html {
