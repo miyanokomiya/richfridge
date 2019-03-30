@@ -91,4 +91,21 @@ describe('models', () => {
       })
     })
   })
+
+  describe('getOptionList', () => {
+    test('option 一覧を取得できること', () => {
+      const map = {
+        a: { name: 'aa' },
+        b: { name: 'bb' },
+        c: { name: 'cc' }
+      }
+      const order = ['b', 'a', 'c']
+      const result = models.getOptionList(map, order)
+      expect(result).toEqual([
+        { value: 'b', label: 'bb' },
+        { value: 'a', label: 'aa' },
+        { value: 'c', label: 'cc' }
+      ])
+    })
+  })
 })

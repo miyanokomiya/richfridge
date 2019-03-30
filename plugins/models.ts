@@ -42,3 +42,13 @@ export function getNextStageID(arg: {
   const nextIndex = (currentIndex + 1) % arg.fridge.stageOrder.length
   return arg.fridge.stageOrder[nextIndex]
 }
+
+export function getOptionList(
+  map: { [key: string]: any },
+  order: string[]
+): Option[] {
+  return order.map(key => ({
+    value: key,
+    label: map[key].name
+  }))
+}

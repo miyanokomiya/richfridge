@@ -36,7 +36,7 @@ export default class SelectInput extends Vue {
   value: any
 
   @Prop({ default: () => [] })
-  optionList: { label: string; value: any }[]
+  optionList: Option[]
 
   @Emit()
   input(value: any) {}

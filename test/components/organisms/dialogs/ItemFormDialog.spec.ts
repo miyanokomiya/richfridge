@@ -1,11 +1,22 @@
 import { mount } from '@vue/test-utils'
 import ItemFormDialog from '@/components/organisms/dialogs/ItemFormDialog.vue'
 import * as models from '@/plugins/models'
+import { getMock } from '@/test/mocks'
 
 describe('components/organisms/dialogs/ItemFormDialog', () => {
+  const { fridge, stages, lanes } = getMock()
+  const props = {
+    fridge,
+    lanes,
+    stages,
+    itemID: 'a',
+    item: models.createItem(),
+    value: true
+  }
+
   test('mount できること', () => {
     const wrapper = mount(ItemFormDialog, {
-      propsData: { value: true }
+      propsData: { ...props }
     })
     expect(wrapper.isVueInstance()).toBeTruthy()
   })
@@ -14,17 +25,43 @@ describe('components/organisms/dialogs/ItemFormDialog', () => {
     describe('existed', () => {
       test('itemID の真偽値と一致すること true', () => {
         const wrapper = mount(ItemFormDialog, {
-          propsData: { itemID: 'a' }
+          propsData: { ...props, itemID: 'a' }
         })
         const vm = wrapper.vm as any
         expect(vm.existed).toBeTruthy()
       })
       test('itemID の真偽値と一致すること false', () => {
         const wrapper = mount(ItemFormDialog, {
-          propsData: { itemID: '' }
+          propsData: { ...props, itemID: '' }
         })
         const vm = wrapper.vm as any
         expect(vm.existed).toBeFalsy()
+      })
+    })
+
+    describe('laneOptionList', () => {
+      test('lane の option 一覧を取得できること', () => {
+        const wrapper = mount(ItemFormDialog, {
+          propsData: { ...props }
+        })
+        const vm = wrapper.vm as any
+        expect(vm.laneOptionList).toEqual([
+          { value: 'bbb', label: 'BBB' },
+          { value: 'aaa', label: 'AAA' }
+        ])
+      })
+    })
+
+    describe('stageOptionList', () => {
+      test('stage の option 一覧を取得できること', () => {
+        const wrapper = mount(ItemFormDialog, {
+          propsData: { ...props }
+        })
+        const vm = wrapper.vm as any
+        expect(vm.stageOptionList).toEqual([
+          { value: 'bb', label: 'BB' },
+          { value: 'aa', label: 'AA' }
+        ])
       })
     })
   })
@@ -34,7 +71,7 @@ describe('components/organisms/dialogs/ItemFormDialog', () => {
       describe('existed = true のとき', () => {
         const item = models.createItem()
         const wrapper = mount(ItemFormDialog, {
-          propsData: { itemID: 'a', item },
+          propsData: { ...props, itemID: 'a' },
           computed: { existed: () => true }
         })
         const vm = wrapper.vm as any
@@ -46,7 +83,7 @@ describe('components/organisms/dialogs/ItemFormDialog', () => {
       describe('existed = false のとき', () => {
         const item = models.createItem()
         const wrapper = mount(ItemFormDialog, {
-          propsData: { itemID: '', item },
+          propsData: { ...props, itemID: '' },
           computed: { existed: () => false }
         })
         const vm = wrapper.vm as any

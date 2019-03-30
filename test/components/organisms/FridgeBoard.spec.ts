@@ -1,25 +1,20 @@
 import { mount } from '@vue/test-utils'
 import FridgeBoard from '@/components/organisms/FridgeBoard.vue'
 import * as models from '@/plugins/models'
+import { getMock } from '@/test/mocks'
 
 describe('components/organisms/FridgeBoard', () => {
-  const fridge = models.createFridge({
-    stageOrder: ['bb', 'aa'],
-    laneOrder: ['bbb', 'aaa']
-  })
-
-  const itemA = models.createItem({ stageID: 'aa', laneID: 'aaa' })
-  const itemB = models.createItem({ stageID: 'bb', laneID: 'bbb' })
-  const itemC = models.createItem({ stageID: 'cc', laneID: 'aaa' })
-  const items = { a: itemA, b: itemB, c: itemC }
-
-  const stageAA = models.createStage({ name: 'aa' })
-  const stageBB = models.createStage({ name: 'bb' })
-  const stages = { aa: stageAA, bb: stageBB }
-
-  const laneAAA = models.createLane({ name: 'aaa' })
-  const laneBBB = models.createLane({ name: 'bbb' })
-  const lanes = { aaa: laneAAA, bbb: laneBBB }
+  const {
+    fridge,
+    items,
+    stages,
+    lanes,
+    itemA,
+    stageAA,
+    stageBB,
+    laneAAA,
+    laneBBB
+  } = getMock()
 
   test('mount できること', () => {
     const wrapper = mount(FridgeBoard, {

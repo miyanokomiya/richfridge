@@ -5,7 +5,12 @@
       <SelectInput
         v-model="itemDraft.laneID"
         class="mt-2"
-        :optionList="optionList"
+        :optionList="laneOptionList"
+      />
+      <SelectInput
+        v-model="itemDraft.stageID"
+        class="mt-2"
+        :optionList="stageOptionList"
       />
       <div class="flex justify-end mt-2">
         <button
@@ -27,6 +32,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import * as models from '@/plugins/models'
 import BaseDialog from '@/components/organisms/dialogs/BaseDialog.vue'
 import ValidTextInput from '@/components/atoms/forms/ValidTextInput.vue'
 import SelectInput from '@/components/atoms/forms/SelectInput.vue'
@@ -46,10 +52,16 @@ export default class ItemFormDialog extends Vue {
   itemID: string
 
   @Prop({ required: true })
-  item: Item
+  item!: Item
 
-  @Prop({ default: () => ({}) })
-  lanes: { [key: string]: Lane }
+  @Prop({ required: true })
+  fridge!: Fridge
+
+  @Prop({ required: true })
+  lanes!: { [key: string]: Lane }
+
+  @Prop({ required: true })
+  stages!: { [key: string]: Stage }
 
   @Emit()
   input(value: boolean) {}
@@ -69,11 +81,14 @@ export default class ItemFormDialog extends Vue {
     return !!this.itemID
   }
 
-  get optionList(): { label: string; value: any }[] {
-    return Object.keys(this.lanes).map(laneID => ({
-      value: laneID,
-      label: this.lanes[laneID].name
-    }))
+  get laneOptionList(): { label: string; value: any }[] {
+    if (!this.fridge) return []
+    return models.getOptionList(this.lanes, this.fridge.laneOrder)
+  }
+
+  get stageOptionList(): { label: string; value: any }[] {
+    if (!this.fridge) return []
+    return models.getOptionList(this.stages, this.fridge.stageOrder)
   }
 
   mounted() {

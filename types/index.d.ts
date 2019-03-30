@@ -17,3 +17,8 @@ type Item = {
   stageID: string
   laneID: string
 }
+
+type Option = {
+  value: any
+  label: string
+}
