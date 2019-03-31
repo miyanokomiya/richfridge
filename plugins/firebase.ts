@@ -26,7 +26,7 @@ Vue.use({
   }
 })
 
-async function tryAuth() {
+export async function tryAuth() {
   try {
     const result = await firebase.auth().getRedirectResult()
     console.log(result.user)
@@ -36,7 +36,6 @@ async function tryAuth() {
   }
   authState.loaded = true
 }
-tryAuth()
 
 export function signInWithRedirect() {
   const provider = new firebase.auth.GoogleAuthProvider()

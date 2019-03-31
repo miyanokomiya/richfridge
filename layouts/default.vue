@@ -13,7 +13,7 @@
         {{ $auth.user.displayName }}
       </div>
     </div>
-    <div class="" :style="{ height: 'calc(100% - 2rem)' }">
+    <div v-if="$auth.loaded" :style="{ height: 'calc(100% - 2rem)' }">
       <nuxt />
     </div>
     <UserConfigDialog
@@ -26,8 +26,10 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { signOut } from '@/plugins/firebase'
+import { tryAuth, signOut } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
+
+tryAuth()
 
 @Component({
   components: {
