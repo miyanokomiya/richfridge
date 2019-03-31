@@ -10,13 +10,27 @@
           class="text-xl text-white hover:text-grey"
         />
       </nuxt-link>
-      <div
-        v-if="$auth.user"
-        class="text-white hover:text-grey font-semibold"
-        @click="() => (showUserConfig = true)"
+      <a
+        v-if="$header.label"
+        class="flex items-center justify-center font-medium text-xl text-white hover:text-grey decoration-none"
+        :style="{ width: 'calc(100% - 4rem)' }"
+        @click="$header.click"
       >
-        {{ $auth.user.displayName }}
-      </div>
+        <span class="truncate" :style="{ 'max-width': 'calc(100% - 2rem)' }">{{
+          $header.label
+        }}</span>
+        <font-awesome-icon
+          v-if="$header.icon"
+          class="ml-1 text-base text-grey-light hover:text-grey-darkest"
+          :icon="$header.icon"
+        />
+      </a>
+      <img
+        v-if="$auth.user"
+        :src="$auth.user.photoURL"
+        class="rounded-full w-auto h-6"
+        @click="() => (showUserConfig = true)"
+      />
     </div>
     <div v-if="$auth.loaded" :style="{ height: 'calc(100% - 2rem)' }">
       <div v-if="notAuth" class="text-center">

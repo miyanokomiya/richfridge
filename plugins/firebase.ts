@@ -21,7 +21,7 @@ const authState = {
 }
 
 Vue.use({
-  install: function(Vue, options) {
+  install: (Vue, options) => {
     ;(Vue as any).util.defineReactive(Vue.prototype, '$auth', authState)
   }
 })

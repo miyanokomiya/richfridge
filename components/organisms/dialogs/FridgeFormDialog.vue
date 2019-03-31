@@ -82,8 +82,8 @@ export default class ItemFormDialog extends Vue {
 
   get tabList(): Option[] {
     return [
-      { value: 'lane', label: 'Lane' },
-      { value: 'stage', label: 'Stage' }
+      { value: 'lane', label: 'Lanes' },
+      { value: 'stage', label: 'Stages' }
     ]
   }
 
