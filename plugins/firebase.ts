@@ -31,13 +31,14 @@ firebase.auth().onAuthStateChanged(user => {
   authState.loaded = true
 })
 
-export async function tryAuth() {
-  try {
-    await firebase.auth().getRedirectResult()
-  } catch (e) {
-    console.log(e)
-  }
-}
+firebase
+  .auth()
+  .getRedirectResult()
+  .then(result => {
+    if (!result.user) return
+    authState.user = result.user
+    authState.loaded = true
+  })
 
 export function signInWithRedirect() {
   const provider = new firebase.auth.GoogleAuthProvider()
