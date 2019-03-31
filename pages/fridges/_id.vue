@@ -1,6 +1,6 @@
 <template>
   <section class="container h-full">
-    <div v-if="$auth.needAuth && !$auth.user" class="text-center">
+    <div v-if="notAuth" class="text-center">
       <p class="my-4">認証が必要です</p>
       <button @click="signInWithRedirect">
         <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
@@ -36,6 +36,9 @@ export default class FridgeShow extends Vue {
   lanes: Lanes = {}
   stages: Stages = {}
 
+  get notAuth() {
+    return this.$auth.needAuth && !this.$auth.user
+  }
   get fridgeID() {
     return this.$route.params.id
   }
@@ -44,6 +47,7 @@ export default class FridgeShow extends Vue {
   }
 
   created() {
+    if (this.notAuth) return
     this.attach()
   }
 

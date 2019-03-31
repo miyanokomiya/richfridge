@@ -26,15 +26,17 @@ Vue.use({
   }
 })
 
+firebase.auth().onAuthStateChanged(user => {
+  authState.user = user
+  authState.loaded = true
+})
+
 export async function tryAuth() {
   try {
-    const result = await firebase.auth().getRedirectResult()
-    console.log(result.user)
-    authState.user = result.user
+    await firebase.auth().getRedirectResult()
   } catch (e) {
     console.log(e)
   }
-  authState.loaded = true
 }
 
 export function signInWithRedirect() {

@@ -26,10 +26,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { tryAuth, signOut } from '@/plugins/firebase'
+import { signOut } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
-
-tryAuth()
 
 @Component({
   components: {
