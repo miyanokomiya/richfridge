@@ -1,17 +1,21 @@
 <template>
   <div v-if="fridge" class="h-full">
     <div
-      class="flex items-center"
+      class="flex items-center px-2"
       :style="{ height: '24px' }"
       @click="() => (editingFridge = true)"
     >
-      {{ fridge.name }}
+      <span>{{ fridge.name }}</span>
+      <font-awesome-icon
+        icon="cog"
+        class="ml-2 text-grey hover:text-grey-darkest"
+      />
     </div>
     <div
       class="relative whitespace-no-wrap overflow-auto p-1"
       :style="{ height: 'calc(100% - 24px)' }"
     >
-      <div class="h-full">
+      <div class="h-full" :style="{ height: laneBlockHeight }">
         <div
           v-for="stageID in fridge.stageOrder"
           :key="stageID"
@@ -29,7 +33,7 @@
           </template>
         </div>
       </div>
-      <div class="absolute" :style="{ top: '28px' }">
+      <div ref="laneBlock" class="absolute" :style="{ top: '28px' }">
         <div
           v-for="laneID in fridge.laneOrder"
           :key="laneID"
@@ -37,7 +41,7 @@
         >
           <template v-if="lanes[laneID]">
             <div
-              class="fixed inline-flex items-center h-6 bg-green-lighter px-2"
+              class="flex items-center h-6 bg-green-lighter px-2"
               :style="{ left: '0.25rem' }"
             >
               <div>{{ lanes[laneID].name }}</div>
@@ -45,7 +49,7 @@
             <div
               v-for="stageID in fridge.stageOrder"
               :key="stageID"
-              class="inline-block align-top mx-1 mt-6 pt-1"
+              class="inline-block align-top mx-1 mt-1"
               :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
             >
               <ItemCard
@@ -137,6 +141,7 @@ export default class Index extends Vue {
   editingItemID: string = ''
   editingItem: Item = null
   editingFridge: boolean = false
+  laneBlockHeight: string = ''
 
   get stageList(): Stage[] {
     return models.map2list<Stage>(this.stages, this.fridge.stageOrder)
@@ -144,6 +149,13 @@ export default class Index extends Vue {
 
   get laneList(): Lane[] {
     return models.map2list<Lane>(this.lanes, this.fridge.laneOrder)
+  }
+
+  updated() {
+    const laneBlock = this.$refs.laneBlock
+    if (!laneBlock) return
+    this.laneBlockHeight = `${(laneBlock as any).getBoundingClientRect()
+      .height + 28}px`
   }
 
   getItemIDListAt(arg: { stageID?: string; laneID?: string } = {}): string[] {
