@@ -13,7 +13,10 @@
     </div>
     <div
       class="relative whitespace-no-wrap overflow-auto p-1"
-      :style="{ height: 'calc(100% - 24px)' }"
+      :style="{
+        height: 'calc(100% - 24px)',
+        '-webkit-overflow-scrolling': 'touch'
+      }"
     >
       <div class="h-full" :style="{ height: laneBlockHeight }">
         <div
@@ -81,6 +84,7 @@
       @input="cancelEditItem"
       @create="createItem"
       @update="updateItem"
+      @remove="removeItem(editingItemID)"
     />
     <FridgeFormDialog
       v-if="editingFridge"
@@ -136,6 +140,11 @@ export default class Index extends Vue {
   @Emit('updateFridge')
   updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
     this.editingFridge = false
+  }
+
+  @Emit('removeItem')
+  removeItem(itemID: string) {
+    this.cancelEditItem()
   }
 
   editingItemID: string = ''

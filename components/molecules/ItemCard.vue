@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white py-1 px-1 border border-blue hover:border-transparent rounded"
+    class="bg-transparent text-blue-dark font-semibold py-1 px-1 border border-blue rounded"
   >
     <div v-if="item" class="flex items-center">
       <div

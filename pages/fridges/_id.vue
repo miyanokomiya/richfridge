@@ -14,6 +14,7 @@
       :stages="stages"
       @createItem="createItem"
       @updateItem="updateItem"
+      @removeItem="removeItem"
       @updateFridge="updateFridge"
     />
   </section>
@@ -56,13 +57,19 @@ export default class FridgeShow extends Vue {
       this.fridge = doc.data() as Fridge
     })
     this.fridgeRef.collection('items').onSnapshot(query => {
-      query.forEach(doc => Vue.set(this.items, doc.id, doc.data()))
+      const items = {}
+      query.forEach(doc => (items[doc.id] = doc.data()))
+      this.items = items
     })
     this.fridgeRef.collection('lanes').onSnapshot(query => {
-      query.forEach(doc => Vue.set(this.lanes, doc.id, doc.data()))
+      const lanes = {}
+      query.forEach(doc => (lanes[doc.id] = doc.data()))
+      this.lanes = lanes
     })
     this.fridgeRef.collection('stages').onSnapshot(query => {
-      query.forEach(doc => Vue.set(this.stages, doc.id, doc.data()))
+      const stages = {}
+      query.forEach(doc => (stages[doc.id] = doc.data()))
+      this.stages = stages
     })
   }
 
@@ -75,6 +82,13 @@ export default class FridgeShow extends Vue {
       .collection('items')
       .doc(itemID)
       .set(item)
+  }
+
+  removeItem(itemID: string) {
+    this.fridgeRef
+      .collection('items')
+      .doc(itemID)
+      .delete()
   }
 
   updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {

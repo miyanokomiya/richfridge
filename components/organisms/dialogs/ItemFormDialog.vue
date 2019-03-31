@@ -13,6 +13,9 @@
         :optionList="stageOptionList"
       />
       <div class="flex justify-end mt-2">
+        <BaseButton v-if="existed" class="mr-auto" color="red" @click="remove">
+          <font-awesome-icon icon="trash-alt" />
+        </BaseButton>
         <BaseButton color="white" @click="input(false)">Cancel</BaseButton>
         <BaseButton class="ml-4" @click="submit">
           {{ existed ? 'Update' : 'Create' }}
@@ -67,7 +70,7 @@ export default class ItemFormDialog extends Vue {
   update(itemID: string, item: Item) {}
 
   @Emit()
-  delete(item: Item) {}
+  remove() {}
 
   itemDraft: Item = null
 
