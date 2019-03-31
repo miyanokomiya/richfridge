@@ -1,7 +1,51 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write;
+  	function auth() {
+    	return request.auth != null;
+    }
+
+    match /fridgeAuth/{authID} {
+    	function getAuth() {
+      	return request.auth.uid in resource.data.users;
+      }
+      function canRead(data) {
+      	return data == null;
+      }
+      function canUpdate(data) {
+      	return data != null && data.type == 'owner';
+      }
+
+    	allow read: if auth() && canRead(getAuth()) != null;
+      allow update: if auth() && canUpdate(getAuth());
+    }
+
+    match /fridges/{fridgeID} {
+    	function getAuth() {
+      	return get(/databases/$(database)/documents/fridgeAuth/$(fridgeID)).data;
+      }
+      function isAuthExisted(data) {
+      	return data != null && request.auth.uid in data.users;
+      }
+      function isOwner(data) {
+      	return data.users[request.auth.uid].type == 'owner';
+      }
+      function canRead(data) {
+        return isAuthExisted(data) && isOwner(data);
+      }
+      function canCreate(data) {
+        return request.auth.uid != null;
+      }
+      function canUpdate(data) {
+        return isAuthExisted(data) && isOwner(data);
+      }
+      function canDelete(data) {
+        return isAuthExisted(data) && isOwner(data);
+      }
+
+      allow read: if auth() && canRead(getAuth());
+    	allow create: if auth() && canCreate(getAuth());
+    	allow update: if auth() && canUpdate(getAuth());
+    	allow delete: if auth() && canDelete(getAuth());
     }
   }
 }
