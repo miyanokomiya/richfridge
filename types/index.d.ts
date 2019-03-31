@@ -1,8 +1,15 @@
+type FridgeAuth = {
+  ownerID: string
+  users: { [key: string]: { type: string } }
+}
+type FridgeAuths = { [key: string]: FridgeAuth }
+
 type Fridge = {
   name: string
   stageOrder: string[]
   laneOrder: string[]
 }
+type Fridges = { [key: string]: Fridge }
 
 type Lane = {
   name: string

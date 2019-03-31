@@ -1,13 +1,6 @@
 <template>
   <section class="container h-full">
-    <div v-if="notAuth" class="text-center">
-      <p class="my-4">認証が必要です</p>
-      <button @click="signInWithRedirect">
-        <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
-      </button>
-    </div>
     <FridgeBoard
-      v-else
       :fridge="fridge"
       :items="items"
       :lanes="lanes"
@@ -22,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { db, signInWithRedirect } from '@/plugins/firebase'
+import { db } from '@/plugins/firebase'
 import * as models from '@/plugins/models.ts'
 import FridgeBoard from '@/components/organisms/FridgeBoard.vue'
 
@@ -36,10 +29,8 @@ export default class FridgeShow extends Vue {
   items: Items = {}
   lanes: Lanes = {}
   stages: Stages = {}
+  unsubscribes: (() => void)[] = []
 
-  get notAuth() {
-    return this.$auth.needAuth && !this.$auth.user
-  }
   get fridgeID() {
     return this.$route.params.id
   }
@@ -48,41 +39,52 @@ export default class FridgeShow extends Vue {
   }
 
   created() {
-    if (this.notAuth) return
     this.attach()
   }
 
+  destroyed() {
+    this.unsubscribes.forEach(f => f())
+  }
+
   attach() {
-    this.fridgeRef.onSnapshot(doc => {
-      this.fridge = doc.data() as Fridge
-    })
-    this.fridgeRef.collection('items').onSnapshot(query => {
-      query.docChanges().forEach(change => {
-        if (change.type === 'removed') {
-          Vue.delete(this.items, change.doc.id)
-        } else {
-          Vue.set(this.items, change.doc.id, change.doc.data())
-        }
+    this.unsubscribes.push(
+      this.fridgeRef.onSnapshot(doc => {
+        this.fridge = doc.data() as Fridge
       })
-    })
-    this.fridgeRef.collection('lanes').onSnapshot(query => {
-      query.docChanges().forEach(change => {
-        if (change.type === 'removed') {
-          Vue.delete(this.lanes, change.doc.id)
-        } else {
-          Vue.set(this.lanes, change.doc.id, change.doc.data())
-        }
+    )
+    this.unsubscribes.push(
+      this.fridgeRef.collection('items').onSnapshot(query => {
+        query.docChanges().forEach(change => {
+          if (change.type === 'removed') {
+            Vue.delete(this.items, change.doc.id)
+          } else {
+            Vue.set(this.items, change.doc.id, change.doc.data())
+          }
+        })
       })
-    })
-    this.fridgeRef.collection('stages').onSnapshot(query => {
-      query.docChanges().forEach(change => {
-        if (change.type === 'removed') {
-          Vue.delete(this.stages, change.doc.id)
-        } else {
-          Vue.set(this.stages, change.doc.id, change.doc.data())
-        }
+    )
+    this.unsubscribes.push(
+      this.fridgeRef.collection('lanes').onSnapshot(query => {
+        query.docChanges().forEach(change => {
+          if (change.type === 'removed') {
+            Vue.delete(this.lanes, change.doc.id)
+          } else {
+            Vue.set(this.lanes, change.doc.id, change.doc.data())
+          }
+        })
       })
-    })
+    )
+    this.unsubscribes.push(
+      this.fridgeRef.collection('stages').onSnapshot(query => {
+        query.docChanges().forEach(change => {
+          if (change.type === 'removed') {
+            Vue.delete(this.stages, change.doc.id)
+          } else {
+            Vue.set(this.stages, change.doc.id, change.doc.data())
+          }
+        })
+      })
+    )
   }
 
   createItem(item) {
@@ -131,10 +133,6 @@ export default class FridgeShow extends Vue {
       batch.delete(this.fridgeRef.collection('items').doc(itemID))
     })
     batch.commit()
-  }
-
-  signInWithRedirect() {
-    signInWithRedirect()
   }
 }
 </script>

@@ -4,24 +4,24 @@ service cloud.firestore {
     	return request.auth != null;
     }
 
-    match /fridgeAuth/{authID} {
-    	function getAuth() {
-      	return request.auth.uid in resource.data.users;
+    match /fridgeAuths/{authID} {
+    	function isOwner() {
+      	return request.auth.uid == resource.data.ownerID;
       }
-      function canRead(data) {
-      	return data == null;
+      function canRead() {
+      	return isOwner() || request.auth.uid in resource.data.users;
       }
-      function canUpdate(data) {
-      	return data != null && data.type == 'owner';
+      function canUpdate() {
+      	return isOwner() || request.auth.uid == resource.data.ownerID;
       }
 
-    	allow read: if auth() && canRead(getAuth()) != null;
-      allow update: if auth() && canUpdate(getAuth());
+    	allow read: if auth() && canRead();
+      allow update: if auth() && canUpdate();
     }
 
     match /fridges/{fridgeID} {
     	function getAuth() {
-      	return get(/databases/$(database)/documents/fridgeAuth/$(fridgeID)).data;
+      	return get(/databases/$(database)/documents/fridgeAuths/$(fridgeID)).data;
       }
       function isAuthExisted(data) {
       	return data != null && request.auth.uid in data.users;

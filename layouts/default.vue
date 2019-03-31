@@ -4,7 +4,12 @@
       class="flex items-center justify-between flex-wrap bg-teal px-2"
       :style="{ height: '2rem' }"
     >
-      <font-awesome-icon icon="home" class="text-white hover:text-grey" />
+      <nuxt-link to="/">
+        <font-awesome-icon
+          icon="home"
+          class="text-xl text-white hover:text-grey"
+        />
+      </nuxt-link>
       <div
         v-if="$auth.user"
         class="text-white hover:text-grey font-semibold"
@@ -14,7 +19,13 @@
       </div>
     </div>
     <div v-if="$auth.loaded" :style="{ height: 'calc(100% - 2rem)' }">
-      <nuxt />
+      <div v-if="notAuth" class="text-center">
+        <p class="my-4">認証が必要です</p>
+        <button @click="signInWithRedirect">
+          <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
+        </button>
+      </div>
+      <nuxt v-else />
     </div>
     <UserConfigDialog
       v-model="showUserConfig"
@@ -26,7 +37,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { signOut } from '@/plugins/firebase'
+import { signOut, signInWithRedirect } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
 
 @Component({
@@ -37,9 +48,17 @@ import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vu
 export default class Default extends Vue {
   showUserConfig: boolean = false
 
+  get notAuth() {
+    return this.$auth.needAuth && !this.$auth.user
+  }
+
   async signOut() {
     await signOut()
     location.reload()
+  }
+
+  signInWithRedirect() {
+    signInWithRedirect()
   }
 
   deleteAccount() {
