@@ -46,6 +46,13 @@ service cloud.firestore {
     	allow create: if auth() && canCreate(getAuth());
     	allow update: if auth() && canUpdate(getAuth());
     	allow delete: if auth() && canDelete(getAuth());
+
+      match /{document=**} {
+        allow read: if auth() && canRead(getAuth());
+        allow create: if auth() && canCreate(getAuth());
+        allow update: if auth() && canUpdate(getAuth());
+        allow delete: if auth() && canDelete(getAuth());
+      }
     }
   }
 }
