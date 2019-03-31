@@ -123,6 +123,21 @@ describe('components/organisms/FridgeBoard', () => {
       })
     })
 
+    describe('removeItem', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
+      test('removeItem イベントが発行され、編集状態がクリアされること', () => {
+        const item = models.createItem()
+        vm.editingItem = item
+        vm.removeItem('a')
+        expect(wrapper.emitted('removeItem')).toEqual([['a']])
+        expect(vm.editingItem).toBeNull()
+      })
+    })
+
     describe('readyCreateItem', () => {
       describe('stageID laneID を指定した場合', () => {
         test('editingItem に item がセットされること', () => {

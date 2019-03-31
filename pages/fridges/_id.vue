@@ -57,19 +57,31 @@ export default class FridgeShow extends Vue {
       this.fridge = doc.data() as Fridge
     })
     this.fridgeRef.collection('items').onSnapshot(query => {
-      const items = {}
-      query.forEach(doc => (items[doc.id] = doc.data()))
-      this.items = items
+      query.docChanges().forEach(change => {
+        if (change.type === 'removed') {
+          Vue.delete(this.items, change.doc.id)
+        } else {
+          Vue.set(this.items, change.doc.id, change.doc.data())
+        }
+      })
     })
     this.fridgeRef.collection('lanes').onSnapshot(query => {
-      const lanes = {}
-      query.forEach(doc => (lanes[doc.id] = doc.data()))
-      this.lanes = lanes
+      query.docChanges().forEach(change => {
+        if (change.type === 'removed') {
+          Vue.delete(this.lanes, change.doc.id)
+        } else {
+          Vue.set(this.lanes, change.doc.id, change.doc.data())
+        }
+      })
     })
     this.fridgeRef.collection('stages').onSnapshot(query => {
-      const stages = {}
-      query.forEach(doc => (stages[doc.id] = doc.data()))
-      this.stages = stages
+      query.docChanges().forEach(change => {
+        if (change.type === 'removed') {
+          Vue.delete(this.stages, change.doc.id)
+        } else {
+          Vue.set(this.stages, change.doc.id, change.doc.data())
+        }
+      })
     })
   }
 
