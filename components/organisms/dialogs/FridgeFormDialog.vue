@@ -3,32 +3,49 @@
     <div>
       <NavigationTabs v-model="tabValue" :tabList="tabList" />
     </div>
-    <form v-if="fridgeDraft" @submit.prevent="submit">
-      <div v-if="tabValue === 'lane'">
-        <div v-for="laneID in fridgeDraft.laneOrder" :key="laneID" class="mt-1">
-          <SortableTextInput
-            v-if="lanesDraft[laneID]"
-            v-model="lanesDraft[laneID].name"
-            @remove="removeLane(laneID)"
-          />
+    <form v-if="fridgeDraft" class="mt-1" @submit.prevent="submit">
+      <div class="overflow-y-auto" :style="{ 'max-height': '50vh' }">
+        <div v-if="tabValue === 'lanes'" class="border p-1 pt-0">
+          <div
+            v-for="laneID in fridgeDraft.laneOrder"
+            :key="laneID"
+            class="mt-1"
+          >
+            <SortableTextInput
+              v-if="lanesDraft[laneID]"
+              v-model="lanesDraft[laneID].name"
+              @remove="removeLane(laneID)"
+            />
+          </div>
+          <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane" />
         </div>
-        <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane" />
-      </div>
-      <div v-else>
-        <div
-          v-for="stageID in fridgeDraft.stageOrder"
-          :key="stageID"
-          class="mt-1"
-        >
-          <SortableTextInput
-            v-if="stagesDraft[stageID]"
-            v-model="stagesDraft[stageID].name"
-            @remove="removeStage(stageID)"
-          />
+        <div v-else-if="tabValue === 'stages'" class="border p-1 pt-0">
+          <div
+            v-for="stageID in fridgeDraft.stageOrder"
+            :key="stageID"
+            class="mt-1"
+          >
+            <SortableTextInput
+              v-if="stagesDraft[stageID]"
+              v-model="stagesDraft[stageID].name"
+              @remove="removeStage(stageID)"
+            />
+          </div>
+          <FlatIconButton class="mt-2" icon="plus-circle" @click="addStage" />
         </div>
-        <FlatIconButton class="mt-2" icon="plus-circle" @click="addStage" />
+        <div v-else>
+          <ValidTextInput v-model="fridgeDraft.name" label="Name" />
+        </div>
       </div>
       <div class="flex justify-end mt-2">
+        <BaseButton
+          v-if="false && tabValue === 'fridge'"
+          class="mr-auto"
+          color="red"
+          @click="remove"
+        >
+          <font-awesome-icon icon="trash-alt" />
+        </BaseButton>
         <BaseButton color="white" @click="input(false)">Cancel</BaseButton>
         <BaseButton class="ml-4" @click="submit">Update</BaseButton>
       </div>
@@ -40,6 +57,7 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import * as models from '@/plugins/models.ts'
 import BaseDialog from '@/components/organisms/dialogs/BaseDialog.vue'
+import ValidTextInput from '@/components/atoms/forms/ValidTextInput.vue'
 import SelectInput from '@/components/atoms/forms/SelectInput.vue'
 import NavigationTabs from '@/components/molecules/NavigationTabs.vue'
 import BaseButton from '@/components/atoms/forms/BaseButton.vue'
@@ -49,6 +67,7 @@ import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vu
 @Component({
   components: {
     BaseDialog,
+    ValidTextInput,
     SelectInput,
     NavigationTabs,
     BaseButton,
@@ -78,12 +97,13 @@ export default class ItemFormDialog extends Vue {
   fridgeDraft: Fridge = null
   lanesDraft: Lanes = {}
   stagesDraft: Stages = {}
-  tabValue: string = 'lane'
+  tabValue: string = 'lanes'
 
   get tabList(): Option[] {
     return [
-      { value: 'lane', label: 'Lanes' },
-      { value: 'stage', label: 'Stages' }
+      { value: 'lanes', label: 'Lanes' },
+      { value: 'stages', label: 'Stages' },
+      { value: 'fridge', label: 'Fridge' }
     ]
   }
 
@@ -128,5 +148,7 @@ export default class ItemFormDialog extends Vue {
       stages: this.stagesDraft
     })
   }
+
+  remove() {}
 }
 </script>
