@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator'
 
 @Component
 export default class BaseDialog extends Vue {
@@ -28,5 +28,20 @@ export default class BaseDialog extends Vue {
 
   @Emit()
   input(value: boolean) {}
+
+  mounted() {
+    if (this.value) document.body.appendChild(this.$el)
+  }
+
+  defeforeDestroy() {
+    if (this.$el.parentNode) {
+      this.$el.parentNode.removeChild(this.$el)
+    }
+  }
+
+  @Watch('value')
+  valueChanged(to) {
+    if (to) document.body.appendChild(this.$el)
+  }
 }
 </script>

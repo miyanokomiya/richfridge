@@ -1,8 +1,8 @@
 <template>
-  <div class="inline-block relative w-64">
+  <div class="relative">
     <select
       v-model="valueDraft"
-      class="block w-full bg-white border border-grey-light hover:border-grey py-2 pl-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+      class="appearance-none block appearance-none w-full border text-grey-darker py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
     >
       <option
         v-for="option in optionList"
