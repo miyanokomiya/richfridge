@@ -39,7 +39,7 @@
       </div>
       <div class="flex justify-end mt-2">
         <BaseButton
-          v-if="false && tabValue === 'fridge'"
+          v-if="tabValue === 'fridge'"
           class="mr-auto"
           color="red"
           @click="remove"
@@ -93,6 +93,9 @@ export default class ItemFormDialog extends Vue {
 
   @Emit()
   update(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {}
+
+  @Emit()
+  remove() {}
 
   fridgeDraft: Fridge = null
   lanesDraft: Lanes = {}
@@ -148,7 +151,5 @@ export default class ItemFormDialog extends Vue {
       stages: this.stagesDraft
     })
   }
-
-  remove() {}
 }
 </script>

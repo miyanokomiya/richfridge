@@ -20,10 +20,14 @@ service cloud.firestore {
       function canUpdate() {
         return isOwner() || request.auth.uid == resource.data.ownerID;
       }
+      function canDelete() {
+        return isOwner();
+      }
 
       allow read: if auth() && canRead();
       allow create: if auth() && canCreate();
       allow update: if auth() && canUpdate();
+      allow delete: if auth() && canDelete();
     }
 
     match /fridges/{fridgeID} {
@@ -31,7 +35,7 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/fridgeAuths/$(fridgeID)).data;
       }
       function isAuthExisted(data) {
-        return data != null && request.auth.uid in data.users;
+        return request.auth.uid in data.users;
       }
       function isOwner(data) {
         return data.users[request.auth.uid].type == 'owner';
@@ -45,16 +49,23 @@ service cloud.firestore {
       function canUpdate(data) {
         return isAuthExisted(data) && isOwner(data);
       }
-      function canDelete(data) {
-        return isAuthExisted(data) && isOwner(data);
+      function canDelete() {
+        return !exists(/databases/$(database)/documents/fridgeAuths/$(fridgeID));
       }
 
       allow read: if auth() && canRead(getAuth());
       allow create: if auth() && canCreate();
       allow update: if auth() && canUpdate(getAuth());
-      allow delete: if auth() && canDelete(getAuth());
+      allow delete: if auth() && canDelete();
 
       match /{document=**} {
+        function canCreate(data) {
+          return isAuthExisted(data) && isOwner(data);
+        }
+        function canDelete(data) {
+          return isAuthExisted(data) && isOwner(data);
+        }
+
         allow read: if auth() && canRead(getAuth());
         allow create: if auth() && canCreate(getAuth());
         allow update: if auth() && canUpdate(getAuth());

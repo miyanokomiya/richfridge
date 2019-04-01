@@ -78,6 +78,7 @@
       :stages="stages"
       @input="() => (editingFridge = false)"
       @update="updateFridge"
+      @remove="removeFridge"
     />
   </div>
 </template>
@@ -126,6 +127,9 @@ export default class Index extends Vue {
     this.editingFridge = false
   }
 
+  @Emit('removeFridge')
+  removeFridge() {}
+
   @Emit('removeItem')
   removeItem(itemID: string) {
     this.cancelEditItem()
@@ -146,6 +150,8 @@ export default class Index extends Vue {
 
   @Watch('fridge')
   fridgeChanged(to: Fridge) {
+    if (!to) return
+
     this.$header.set({
       label: to.name,
       icon: 'cog',

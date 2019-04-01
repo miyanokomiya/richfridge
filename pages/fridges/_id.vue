@@ -9,6 +9,7 @@
       @updateItem="updateItem"
       @removeItem="removeItem"
       @updateFridge="updateFridge"
+      @removeFridge="removeFridge"
     />
   </section>
 </template>
@@ -105,7 +106,7 @@ export default class FridgeShow extends Vue {
       .delete()
   }
 
-  updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
+  async updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
     const { fridge, lanes, stages } = models.convertTmpID({
       ...arg,
       getLaneID: () => this.fridgeRef.collection('lanes').doc().id,
@@ -129,10 +130,40 @@ export default class FridgeShow extends Vue {
         stages[stageID]
       )
     })
+
+    this.fridge.stageOrder
+      .filter(stageID => !fridge.stageOrder.includes(stageID))
+      .forEach(stageID => {
+        batch.delete(this.fridgeRef.collection('stages').doc(stageID))
+      })
+    this.fridge.laneOrder
+      .filter(laneID => !fridge.laneOrder.includes(laneID))
+      .forEach(laneID => {
+        batch.delete(this.fridgeRef.collection('lanes').doc(laneID))
+      })
     removedItemIDList.forEach(itemID => {
       batch.delete(this.fridgeRef.collection('items').doc(itemID))
     })
-    batch.commit()
+    await batch.commit()
+  }
+
+  async removeFridge() {
+    await this.updateFridge({
+      fridge: {
+        ...this.fridge,
+        stageOrder: [],
+        laneOrder: []
+      },
+      stages: {},
+      lanes: {}
+    })
+    await db
+      .collection('fridgeAuths')
+      .doc(this.fridgeID)
+      .delete()
+
+    await this.fridgeRef.delete()
+    this.$router.push('/')
   }
 }
 </script>
