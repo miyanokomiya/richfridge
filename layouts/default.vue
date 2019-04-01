@@ -11,7 +11,7 @@
         />
       </nuxt-link>
       <a
-        v-if="$header.label"
+        v-if="$header.label || $header.icon"
         class="flex items-center justify-center font-medium text-xl text-white hover:text-grey decoration-none"
         :style="{ width: 'calc(100% - 4rem)' }"
         @click="$header.click"

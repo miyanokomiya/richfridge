@@ -1,3 +1,11 @@
+export function createFridgeAuth(arg: Partial<FridgeAuth> = {}): FridgeAuth {
+  return {
+    ownerID: '',
+    users: {},
+    ...arg
+  }
+}
+
 export function createFridge(arg: Partial<Fridge> = {}): Fridge {
   return {
     name: '',

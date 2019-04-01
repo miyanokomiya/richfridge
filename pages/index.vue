@@ -1,5 +1,6 @@
 <template>
   <section class="container h-full">
+    <FlatIconButton class="my-2" icon="plus-circle" @click="createFridge" />
     <div class="p-2">
       <div
         v-for="fridgeAuthID in fridgeAuthIDList"
@@ -21,15 +22,23 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { db } from '@/plugins/firebase'
+import * as models from '@/plugins/models'
+import FlatIconButton from '@/components/atoms/forms/FlatIconButton.vue'
 
-@Component
+@Component({
+  components: {
+    FlatIconButton
+  }
+})
 export default class RootIndex extends Vue {
   fridgeAuths: FridgeAuths = {}
   fridges: Fridges = {}
   unsubscribes: (() => void)[] = []
 
   get fridgeAuthIDList() {
-    return Object.keys(this.fridgeAuths).filter(id => id in this.fridges)
+    const list = Object.keys(this.fridgeAuths).filter(id => id in this.fridges)
+    list.sort((a, b) => (this.fridges[a].name > this.fridges[b].name ? 1 : -1))
+    return list
   }
 
   created() {
@@ -61,6 +70,20 @@ export default class RootIndex extends Vue {
           })
         })
     )
+  }
+
+  async createFridge() {
+    const fridgeAuth = models.createFridgeAuth({
+      ownerID: this.$auth.user.uid,
+      users: { [this.$auth.user.uid]: { type: 'owner' } }
+    })
+    const fridgeAuthRef = db.collection('fridgeAuths').doc()
+
+    const fridge = models.createFridge({ name: 'new' })
+    const fridgeRef = db.collection('fridges').doc(fridgeAuthRef.id)
+
+    await fridgeRef.set(fridge)
+    await fridgeAuthRef.set(fridgeAuth)
   }
 }
 </script>

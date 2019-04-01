@@ -1,6 +1,20 @@
 import * as models from '@/plugins/models'
 
 describe('models', () => {
+  describe('createFridgeAuth', () => {
+    test('FridgeAuth を作成できること', () => {
+      const result = models.createFridgeAuth()
+      expect(result).toEqual({ ownerID: '', users: {} })
+    })
+    test('引数のプロパティを引き継ぐこと', () => {
+      const result = models.createFridgeAuth({
+        ownerID: 'a',
+        users: { b: { type: 'owner' } }
+      })
+      expect(result).toEqual({ ownerID: 'a', users: { b: { type: 'owner' } } })
+    })
+  })
+
   describe('createFridge', () => {
     test('Fridge を作成できること', () => {
       const result = models.createFridge()
