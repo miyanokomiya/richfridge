@@ -33,7 +33,7 @@ export default class BaseDialog extends Vue {
     if (this.value) document.body.appendChild(this.$el)
   }
 
-  defeforeDestroy() {
+  beforeDestroy() {
     if (this.$el.parentNode) {
       this.$el.parentNode.removeChild(this.$el)
     }
