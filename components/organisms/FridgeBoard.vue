@@ -7,7 +7,7 @@
       <div
         v-for="stageID in fridge.stageOrder"
         :key="stageID"
-        class="inline-block align-top border border-green-light mx-1 h-full"
+        class="inline-block align-top border-2 border-green-light mx-1 h-full"
         :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
       >
         <template v-if="stages[stageID]">
@@ -25,11 +25,11 @@
       <div
         v-for="laneID in fridge.laneOrder"
         :key="laneID"
-        class="mt-1 border border-red-light"
+        class="mt-1 border border-blue"
       >
         <template v-if="lanes[laneID]">
           <div
-            class="flex items-center h-6 bg-green-lighter px-2"
+            class="flex items-center h-6 bg-blue-lighter px-2"
             :style="{ left: '0.25rem' }"
           >
             <div>{{ lanes[laneID].name }}</div>
@@ -37,7 +37,7 @@
           <div
             v-for="stageID in fridge.stageOrder"
             :key="stageID"
-            class="inline-block align-top mx-1 mt-1"
+            class="inline-block align-top mx-1 mt-1 pr-1"
             :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
           >
             <ItemCard
@@ -48,11 +48,12 @@
               @edit="readyUpdateItem(itemID)"
               @shift="shiftItem(itemID)"
             />
-            <FlatIconButton
-              class="mt-2 mb-1"
-              icon="plus-circle"
-              @click="readyCreateItem({ stageID, laneID })"
-            />
+            <div class="mt-2 mb-1 w-4/5 mx-auto">
+              <FlatIconButton
+                icon="plus-circle"
+                @click="readyCreateItem({ stageID, laneID })"
+              />
+            </div>
           </div>
         </template>
       </div>
