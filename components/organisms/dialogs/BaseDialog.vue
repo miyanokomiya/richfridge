@@ -5,7 +5,8 @@
     @click.self="input(false)"
   >
     <div
-      class="fixed shadow-inner max-w-md md:relative pin-t pin-x align-top m-auto justify-end md:justify-center pt-8 pb-4 px-4 bg-white md:rounded w-full md:h-auto md:shadow flex flex-col"
+      class="fixed shadow-inner max-w-md md:relative pin-x align-top m-auto justify-end md:justify-center pt-8 pb-4 px-4 bg-white md:rounded w-full md:h-auto md:shadow flex flex-col"
+      :class="{ [pin]: true }"
     >
       <slot />
       <span class="absolute pin-t pin-r pt-4 px-4" @click="input(false)">
@@ -26,8 +27,15 @@ export default class BaseDialog extends Vue {
   @Prop()
   value: boolean
 
+  @Prop({ type: Boolean, default: false })
+  bottom: boolean
+
   @Emit()
   input(value: boolean) {}
+
+  get pin() {
+    return this.bottom ? 'pin-b' : 'pin-t'
+  }
 
   mounted() {
     if (this.value) document.body.appendChild(this.$el)

@@ -46,6 +46,11 @@
       @signOut="signOut"
       @deleteAccount="deleteAccount"
     />
+    <ConfirmDialog
+      :value="!!$confirm.message"
+      @input="() => $confirm.clear()"
+      @exec="exec"
+    />
   </div>
 </template>
 
@@ -53,10 +58,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { signOut, signInWithRedirect } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
+import ConfirmDialog from '@/components/organisms/dialogs/ConfirmDialog.vue'
 
 @Component({
   components: {
-    UserConfigDialog
+    UserConfigDialog,
+    ConfirmDialog
   }
 })
 export default class Default extends Vue {
@@ -77,6 +84,11 @@ export default class Default extends Vue {
 
   deleteAccount() {
     // TODO
+  }
+
+  exec() {
+    this.$confirm.exec()
+    this.$confirm.clear()
   }
 }
 </script>

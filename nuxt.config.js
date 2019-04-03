@@ -26,7 +26,7 @@ export default {
    */
   css: ['~/assets/css/tailwind.css'],
 
-  plugins: ['@/plugins/header'],
+  plugins: ['@/plugins/header', '@/plugins/confirm'],
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', 'nuxt-fontawesome'],
   axios: {
     // See https://github.com/nuxt-community/axios-module#options

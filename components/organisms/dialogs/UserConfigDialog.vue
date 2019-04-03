@@ -22,7 +22,7 @@ import BaseButton from '@/components/atoms/forms/BaseButton.vue'
     BaseButton
   }
 })
-export default class ItemFormDialog extends Vue {
+export default class UserConfigDialog extends Vue {
   @Prop({ required: true })
   value: boolean
 

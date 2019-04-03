@@ -14,5 +14,11 @@ declare module 'vue/types/vue' {
       set: (arg: { label?: string; icon?: string; click?: () => void }) => void
       clear: () => void
     }
+    $confirm: {
+      message: string
+      exec: () => void
+      set: (arg: { message: string; exec: () => void }) => void
+      clear: () => void
+    }
   }
 }

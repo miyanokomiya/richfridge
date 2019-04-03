@@ -36,7 +36,7 @@ export default class RootIndex extends Vue {
   unsubscribes: (() => void)[] = []
 
   get fridgeAuthIDList() {
-    const list = Object.keys(this.fridgeAuths).filter(id => id in this.fridges)
+    const list = Object.keys(this.fridgeAuths).filter(id => this.fridges[id])
     list.sort((a, b) => (this.fridges[a].name > this.fridges[b].name ? 1 : -1))
     return list
   }
@@ -60,6 +60,12 @@ export default class RootIndex extends Vue {
               Vue.delete(this.fridgeAuths, change.doc.id)
             } else {
               Vue.set(this.fridgeAuths, change.doc.id, change.doc.data())
+
+              // ローカルコミットで追加済ならロードはスキップ
+              if (change.type === 'added' && this.fridges[change.doc.id]) {
+                return
+              }
+
               db.collection('fridges')
                 .doc(change.doc.id)
                 .get()
@@ -83,6 +89,7 @@ export default class RootIndex extends Vue {
     const fridgeRef = db.collection('fridges').doc(fridgeAuthRef.id)
 
     await fridgeRef.set(fridge)
+    Vue.set(this.fridges, fridgeAuthRef.id, fridge)
     await fridgeAuthRef.set(fridgeAuth)
   }
 }

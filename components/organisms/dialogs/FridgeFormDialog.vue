@@ -42,7 +42,7 @@
           v-if="tabValue === 'fridge'"
           class="mr-auto"
           color="red"
-          @click="remove"
+          @click="removeFridge"
         >
           <font-awesome-icon icon="trash-alt" />
         </BaseButton>
@@ -75,7 +75,7 @@ import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vu
     SortableTextInput
   }
 })
-export default class ItemFormDialog extends Vue {
+export default class FridgeFormDialog extends Vue {
   @Prop({ required: true })
   value: boolean
 
@@ -142,6 +142,13 @@ export default class ItemFormDialog extends Vue {
       stageOrder: this.fridgeDraft.stageOrder.filter(id => id !== stageID)
     }
     Vue.delete(this.stagesDraft, stageID)
+  }
+
+  removeFridge() {
+    this.$confirm.set({
+      message: '本当に削除しますか？',
+      exec: () => this.remove()
+    })
   }
 
   submit() {

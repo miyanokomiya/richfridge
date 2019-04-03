@@ -44,6 +44,10 @@ export default class FridgeShow extends Vue {
   }
 
   destroyed() {
+    this.detach()
+  }
+
+  detach() {
     this.unsubscribes.forEach(f => f())
   }
 
@@ -157,12 +161,16 @@ export default class FridgeShow extends Vue {
       stages: {},
       lanes: {}
     })
+
+    this.detach()
+
     await db
       .collection('fridgeAuths')
       .doc(this.fridgeID)
       .delete()
 
     await this.fridgeRef.delete()
+
     this.$router.push('/')
   }
 }
