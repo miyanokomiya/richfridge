@@ -117,12 +117,6 @@ export default class FridgeShow extends Vue {
       getStageID: () => this.fridgeRef.collection('stages').doc().id
     })
 
-    const removedItemIDList = models.getRemovedItemIDList({
-      items: this.items,
-      lanes: arg.lanes,
-      stages: arg.stages
-    })
-
     const batch = db.batch()
     batch.set(this.fridgeRef, fridge)
     Object.keys(lanes).forEach(laneID => {
@@ -145,31 +139,15 @@ export default class FridgeShow extends Vue {
       .forEach(laneID => {
         batch.delete(this.fridgeRef.collection('lanes').doc(laneID))
       })
-    removedItemIDList.forEach(itemID => {
-      batch.delete(this.fridgeRef.collection('items').doc(itemID))
-    })
     await batch.commit()
   }
 
   async removeFridge() {
-    await this.updateFridge({
-      fridge: {
-        ...this.fridge,
-        stageOrder: [],
-        laneOrder: []
-      },
-      stages: {},
-      lanes: {}
-    })
-
     this.detach()
-
     await db
       .collection('fridgeAuths')
       .doc(this.fridgeID)
       .delete()
-
-    await this.fridgeRef.delete()
 
     this.$router.push('/')
   }
