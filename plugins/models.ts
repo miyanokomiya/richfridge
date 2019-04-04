@@ -162,3 +162,14 @@ export function getItemIDListAt(arg: {
 export function getLaneIDTree(lanes: Lanes): LaneIDNode[] {
   return []
 }
+
+export function existedLaneID(arg: {
+  fridge: Fridge
+  lanes: Lanes
+  laneID: string
+}): boolean {
+  if (arg.fridge.laneOrder.includes(arg.laneID)) return true
+  return !!arg.fridge.laneOrder.find(id => {
+    return arg.lanes[id].childOrder.indexOf(arg.laneID) !== -1
+  })
+}

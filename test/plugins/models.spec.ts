@@ -229,4 +229,43 @@ describe('models', () => {
       expect(result).toEqual(['c', 'd', 'f'])
     })
   })
+
+  describe('existedLaneID', () => {
+    const fridge = models.createFridge({ laneOrder: ['b'] })
+    const lanes = {
+      a: models.createLane(),
+      b: models.createLane({ childOrder: ['a'] }),
+      c: models.createLane()
+    }
+    describe('fridge.laneOrder に含まれる場合', () => {
+      test('true を返すこと', () => {
+        const result = models.existedLaneID({
+          fridge,
+          lanes,
+          laneID: 'b'
+        })
+        expect(result).toBeTruthy()
+      })
+    })
+    describe('lane.childOrder に含まれる場合', () => {
+      test('true を返すこと', () => {
+        const result = models.existedLaneID({
+          fridge,
+          lanes,
+          laneID: 'a'
+        })
+        expect(result).toBeTruthy()
+      })
+    })
+    describe('fridge.laneOrder lane.childOrder どちらにも含まれない場合', () => {
+      test('false を返すこと', () => {
+        const result = models.existedLaneID({
+          fridge,
+          lanes,
+          laneID: 'c'
+        })
+        expect(result).toBeFalsy()
+      })
+    })
+  })
 })

@@ -129,16 +129,25 @@ export default class FridgeShow extends Vue {
       )
     })
 
-    this.fridge.stageOrder
+    Object.keys(this.stages)
       .filter(stageID => !fridge.stageOrder.includes(stageID))
       .forEach(stageID => {
         batch.delete(this.fridgeRef.collection('stages').doc(stageID))
       })
-    this.fridge.laneOrder
-      .filter(laneID => !fridge.laneOrder.includes(laneID))
+
+    Object.keys(this.lanes)
+      .filter(
+        laneID =>
+          !models.existedLaneID({
+            fridge,
+            lanes,
+            laneID
+          })
+      )
       .forEach(laneID => {
         batch.delete(this.fridgeRef.collection('lanes').doc(laneID))
       })
+
     await batch.commit()
   }
 

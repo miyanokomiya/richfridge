@@ -27,7 +27,7 @@
                     v-if="lanesDraft[childID]"
                     v-model="lanesDraft[childID].name"
                     :style="{ width: 'calc(100% - 1rem)' }"
-                    @remove="removeLane(childID, parentID)"
+                    @remove="removeLane(childID, laneID)"
                   />
                 </div>
               </div>
@@ -40,7 +40,7 @@
               </div>
             </template>
           </div>
-          <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane" />
+          <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane()" />
         </div>
         <div v-else-if="tabValue === 'stages'" class="border p-1 pt-0">
           <div
