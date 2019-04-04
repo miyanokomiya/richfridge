@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { signOut, signInWithRedirect } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
 import ConfirmDialog from '@/components/organisms/dialogs/ConfirmDialog.vue'
@@ -71,6 +71,11 @@ export default class Default extends Vue {
 
   get notAuth() {
     return this.$auth.needAuth && !this.$auth.user
+  }
+
+  @Watch('$route')
+  $routeChanged() {
+    this.$confirm.clear()
   }
 
   async signOut() {
