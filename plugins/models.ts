@@ -18,6 +18,7 @@ export function createFridge(arg: Partial<Fridge> = {}): Fridge {
 export function createLane(arg: Partial<Lane> = {}): Lane {
   return {
     name: '',
+    childOrder: [],
     ...arg
   }
 }
@@ -83,15 +84,35 @@ export function convertTmpID(arg: {
   const fridge = clone<Fridge>(arg.fridge)
 
   // 新規作成された lane のIDを調整
+  const convertLaneIDMap = {}
   const lanes = Object.keys(arg.lanes).reduce((map, laneID) => {
     let validID = laneID
     if (laneID.indexOf('NEW_') === 0) {
       validID = arg.getLaneID()
-      fridge.laneOrder[fridge.laneOrder.indexOf(laneID)] = validID
+      convertLaneIDMap[laneID] = validID
     }
     map[validID] = arg.lanes[laneID]
     return map
   }, {})
+
+  // fridgeのlaneOrderを探索して置換
+  Object.keys(convertLaneIDMap).forEach(newID => {
+    const index = fridge.laneOrder.indexOf(newID)
+    if (index !== -1) {
+      fridge.laneOrder[index] = convertLaneIDMap[newID]
+    }
+  })
+
+  // laneのchildOrderを探索して置換
+  Object.keys(lanes).forEach(laneID => {
+    const lane = lanes[laneID]
+    Object.keys(convertLaneIDMap).forEach(newID => {
+      const index = lane.childOrder.indexOf(newID)
+      if (index !== -1) {
+        lane.childOrder[index] = convertLaneIDMap[newID]
+      }
+    })
+  })
 
   // 新規作成された stage のIDを調整
   const stages = Object.keys(arg.stages).reduce((map, stageID) => {
@@ -136,4 +157,8 @@ export function getItemIDListAt(arg: {
   }
   list.sort((a, b) => (arg.items[a].name >= arg.items[b].name ? 1 : -1))
   return list
+}
+
+export function getLaneIDTree(lanes: Lanes): LaneIDNode[] {
+  return []
 }

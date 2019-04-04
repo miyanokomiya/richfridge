@@ -13,6 +13,7 @@ type Fridges = { [key: string]: Fridge }
 
 type Lane = {
   name: string
+  childOrder: string[]
 }
 type Lanes = { [key: string]: Lane }
 
@@ -31,4 +32,9 @@ type Items = { [key: string]: Item }
 type Option = {
   value: any
   label: string
+}
+
+type LaneIDNode = {
+  id: string
+  children: LaneIDNode[]
 }

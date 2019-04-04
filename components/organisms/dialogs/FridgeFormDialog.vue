@@ -11,11 +11,34 @@
             :key="laneID"
             class="mt-1"
           >
-            <SortableTextInput
-              v-if="lanesDraft[laneID]"
-              v-model="lanesDraft[laneID].name"
-              @remove="removeLane(laneID)"
-            />
+            <template v-if="lanesDraft[laneID]">
+              <SortableTextInput
+                v-model="lanesDraft[laneID].name"
+                @remove="removeLane(laneID)"
+              />
+              <div v-if="lanesDraft[laneID].childOrder.length > 0">
+                <div
+                  v-for="childID in lanesDraft[laneID].childOrder"
+                  :key="childID"
+                  class="flex items-center justify-between mt-1"
+                >
+                  <div class="h-1 w-4 border"></div>
+                  <SortableTextInput
+                    v-if="lanesDraft[childID]"
+                    v-model="lanesDraft[childID].name"
+                    :style="{ width: 'calc(100% - 1rem)' }"
+                    @remove="removeLane(childID, parentID)"
+                  />
+                </div>
+              </div>
+              <div class="ml-4" :style="{ width: 'calc(100% - 1rem - 2rem)' }">
+                <FlatIconButton
+                  class="mt-1"
+                  icon="plus-circle"
+                  @click="addLane(laneID)"
+                />
+              </div>
+            </template>
           </div>
           <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane" />
         </div>
@@ -116,9 +139,13 @@ export default class FridgeFormDialog extends Vue {
     this.stagesDraft = models.clone<Stages>(this.stages)
   }
 
-  addLane() {
+  addLane(parentID?: string) {
     const laneID = `NEW_${Math.random()}`
-    this.fridgeDraft.laneOrder.push(laneID)
+    if (parentID) {
+      this.lanesDraft[parentID].childOrder.push(laneID)
+    } else {
+      this.fridgeDraft.laneOrder.push(laneID)
+    }
     Vue.set(this.lanesDraft, laneID, models.createLane())
   }
 
@@ -128,10 +155,18 @@ export default class FridgeFormDialog extends Vue {
     Vue.set(this.stagesDraft, stageID, models.createStage())
   }
 
-  removeLane(laneID: string) {
-    this.fridgeDraft = {
-      ...this.fridgeDraft,
-      laneOrder: this.fridgeDraft.laneOrder.filter(id => id !== laneID)
+  removeLane(laneID: string, parentID?: string) {
+    if (parentID) {
+      const parent = this.lanesDraft[parentID]
+      this.lanesDraft[parentID] = {
+        ...parent,
+        childOrder: parent.childOrder.filter(id => id !== laneID)
+      }
+    } else {
+      this.fridgeDraft = {
+        ...this.fridgeDraft,
+        laneOrder: this.fridgeDraft.laneOrder.filter(id => id !== laneID)
+      }
     }
     Vue.delete(this.lanesDraft, laneID)
   }

@@ -33,11 +33,11 @@ describe('models', () => {
   describe('createLane', () => {
     test('Lane を作成できること', () => {
       const result = models.createLane()
-      expect(result).toEqual({ name: '' })
+      expect(result).toEqual({ name: '', childOrder: [] })
     })
     test('引数のプロパティを引き継ぐこと', () => {
-      const result = models.createLane({ name: 'a' })
-      expect(result).toEqual({ name: 'a' })
+      const result = models.createLane({ name: 'a', childOrder: ['b'] })
+      expect(result).toEqual({ name: 'a', childOrder: ['b'] })
     })
   })
 
@@ -127,22 +127,45 @@ describe('models', () => {
     const getLaneID = () => 'lane_id'
     const getStageID = () => 'stage_id'
 
-    test('lanes の一時IDを変換すること', () => {
-      const fridge = models.createFridge({ laneOrder: ['NEW_a', 'b'] })
-      const lanes = {
-        NEW_a: models.createLane(),
-        b: models.createLane()
-      }
-      const result = models.convertTmpID({
-        fridge,
-        lanes,
-        stages: {},
-        getLaneID,
-        getStageID
+    describe('fridge.laneOrderに含まれる場合', () => {
+      test('lanes の一時IDを変換すること ', () => {
+        const fridge = models.createFridge({ laneOrder: ['NEW_a', 'b'] })
+        const lanes = {
+          NEW_a: models.createLane(),
+          b: models.createLane()
+        }
+        const result = models.convertTmpID({
+          fridge,
+          lanes,
+          stages: {},
+          getLaneID,
+          getStageID
+        })
+        expect(result.fridge.laneOrder).toEqual(['lane_id', 'b'])
+        expect(result.lanes).toHaveProperty('lane_id')
+        expect(result.lanes).not.toHaveProperty('NEW_a')
       })
-      expect(result.fridge.laneOrder).toEqual(['lane_id', 'b'])
-      expect(result.lanes).toHaveProperty('lane_id')
-      expect(result.lanes).not.toHaveProperty('NEW_a')
+    })
+
+    describe('lane.childOrderに含まれる場合', () => {
+      test('lanes の一時IDを変換すること', () => {
+        const fridge = models.createFridge({ laneOrder: ['b'] })
+        const lanes = {
+          NEW_a: models.createLane(),
+          b: models.createLane({ childOrder: ['NEW_a'] })
+        }
+        const result = models.convertTmpID({
+          fridge,
+          lanes,
+          stages: {},
+          getLaneID,
+          getStageID
+        })
+        expect(result.fridge).toEqual(fridge)
+        expect(result.lanes).toHaveProperty('lane_id')
+        expect(result.lanes).not.toHaveProperty('NEW_a')
+        expect(result.lanes.b.childOrder).toEqual(['lane_id'])
+      })
     })
 
     test('stages の一時IDを変換すること', () => {
