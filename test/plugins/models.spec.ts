@@ -187,4 +187,23 @@ describe('models', () => {
       expect(result).toEqual(['b'])
     })
   })
+
+  describe('getItemIDListAt', () => {
+    test('stageID laneID に対応する item の id 一覧が name 昇順で取得できること', () => {
+      const items = {
+        a: models.createItem({ stageID: 'a', laneID: '1', name: 'a' }),
+        g: models.createItem({ stageID: 'c', laneID: '1', name: 'g' }),
+        d: models.createItem({ stageID: 'b', laneID: '1', name: 'd' }),
+        f: models.createItem({ stageID: 'b', laneID: '1', name: 'f' }),
+        b: models.createItem({ stageID: 'a', laneID: '2', name: 'b' }),
+        c: models.createItem({ stageID: 'b', laneID: '1', name: 'c' })
+      }
+      const result = models.getItemIDListAt({
+        items,
+        laneID: '1',
+        stageID: 'b'
+      })
+      expect(result).toEqual(['c', 'd', 'f'])
+    })
+  })
 })

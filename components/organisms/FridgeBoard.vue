@@ -172,14 +172,10 @@ export default class Index extends Vue {
   }
 
   getItemIDListAt(arg: { stageID?: string; laneID?: string } = {}): string[] {
-    let list = Object.keys(this.items)
-    if (arg.stageID) {
-      list = list.filter(itemID => this.items[itemID].stageID === arg.stageID)
-    }
-    if (arg.laneID) {
-      list = list.filter(itemID => this.items[itemID].laneID === arg.laneID)
-    }
-    return list
+    return models.getItemIDListAt({
+      items: this.items,
+      ...arg
+    })
   }
 
   shiftItem(itemID: string) {

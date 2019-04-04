@@ -121,3 +121,19 @@ export function getRemovedItemIDList(arg: {
     return !(item.laneID in arg.lanes && item.stageID in arg.stages)
   })
 }
+
+export function getItemIDListAt(arg: {
+  items: Items
+  stageID?: string
+  laneID?: string
+}): string[] {
+  let list = Object.keys(arg.items)
+  if (arg.stageID) {
+    list = list.filter(itemID => arg.items[itemID].stageID === arg.stageID)
+  }
+  if (arg.laneID) {
+    list = list.filter(itemID => arg.items[itemID].laneID === arg.laneID)
+  }
+  list.sort((a, b) => (arg.items[a].name >= arg.items[b].name ? 1 : -1))
+  return list
+}
