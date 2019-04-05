@@ -34,6 +34,45 @@
           >
             <div>{{ lanes[laneID].name }}</div>
           </div>
+          <template v-if="lanes[laneID].childOrder.length > 0">
+            <div
+              v-for="childID in lanes[laneID].childOrder"
+              :key="childID"
+              class=""
+            >
+              <div
+                class="flex items-center h-5 bg-indigo-lighter px-2 mt-1 ml-2"
+              >
+                <div class="text-sm">{{ lanes[childID].name }}</div>
+              </div>
+              <div
+                v-for="stageID in fridge.stageOrder"
+                :key="stageID"
+                class="inline-block align-top mx-1 pr-1"
+                :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
+              >
+                <div class="mx-1 border border-indigo border-t-0 pt-1">
+                  <ItemCard
+                    v-for="itemID in getItemIDListAt({
+                      stageID,
+                      laneID: childID
+                    })"
+                    :key="itemID"
+                    :item="items[itemID]"
+                    class="mx-1 mb-1 mb-1"
+                    @edit="readyUpdateItem(itemID)"
+                    @shift="shiftItem(itemID)"
+                  />
+                  <div class="mt-2 mb-1 w-4/5 mx-auto">
+                    <FlatIconButton
+                      icon="plus-circle"
+                      @click="readyCreateItem({ stageID, laneID: childID })"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
           <div
             v-for="stageID in fridge.stageOrder"
             :key="stageID"
