@@ -112,10 +112,6 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
-html,
-body {
-  overflow: hidden;
-}
 
 *,
 *:before,
