@@ -41,7 +41,7 @@
               class=""
             >
               <div
-                class="flex items-center h-5 bg-indigo-lighter px-2 mt-1 ml-2"
+                class="flex items-center h-5 bg-indigo-lighter px-2 mt-1 ml-2 mr-3"
               >
                 <div class="text-sm">{{ lanes[childID].name }}</div>
               </div>
