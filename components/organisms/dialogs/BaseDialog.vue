@@ -10,6 +10,7 @@
       @click.self="input(false)"
     >
       <div
+        ref="dialog"
         class="fixed shadow-inner max-w-md md:relative pin-x align-top m-auto justify-end md:justify-center pt-8 pb-4 px-4 bg-white md:rounded w-full md:h-auto md:shadow flex flex-col"
         :class="{ [pin]: true }"
         :style="{
@@ -59,15 +60,8 @@ export default class BaseDialog extends Vue {
   }
 
   beforeDestroy() {
-    // templateは更新されないため、直接スタイルを変更
-    const el = this.$el as HTMLElement
-    if (el && el.style) el.style.opacity = '0'
-    // vueのアニメーションを待機してからdom片付け
-    setTimeout(() => {
-      if (this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el)
-      }
-    }, 300) // transitionの秒数と合わせる
+    if (!this.value) return // valueがfalseならwatchにて後処理済
+    this.beforeClose()
   }
 
   @Watch('value')
@@ -75,7 +69,7 @@ export default class BaseDialog extends Vue {
     if (to) {
       this.show()
     } else {
-      this.hidden = true
+      this.beforeClose()
     }
   }
 
@@ -83,6 +77,23 @@ export default class BaseDialog extends Vue {
     document.body.appendChild(this.$el)
     await this.$nextTick()
     this.hidden = false
+  }
+
+  beforeClose() {
+    this.hidden = true
+    // destroy命令が出ているとtemplateは更新されないため、直接スタイルを変更
+    const $el = this.$el as HTMLElement
+    if ($el && $el.style) {
+      $el.style.opacity = '0'
+      const $dialog = this.$refs.dialog as HTMLElement
+      $dialog.style.transform = this.translateY
+    }
+    // vueのアニメーションを待機してからdom片付け
+    setTimeout(() => {
+      if (this.$el.parentNode) {
+        this.$el.parentNode.removeChild(this.$el)
+      }
+    }, 300) // transitionの秒数と合わせる
   }
 }
 </script>
