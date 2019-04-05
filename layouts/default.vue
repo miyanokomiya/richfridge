@@ -49,7 +49,7 @@
     <ConfirmDialog
       :value="!!$confirm.message"
       :message="$confirm.message"
-      @input="() => $confirm.clear()"
+      @input="$confirm.clear()"
       @exec="exec"
     />
   </div>

@@ -51,7 +51,11 @@
                 class="inline-block align-top mx-1 pr-1"
                 :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
               >
-                <div class="mx-1 border border-indigo border-t-0 pt-1">
+                <transition-group
+                  tag="div"
+                  name="items"
+                  class="mx-1 border border-indigo border-t-0 pt-1"
+                >
                   <ItemCard
                     v-for="itemID in getItemIDListAt({
                       stageID,
@@ -59,17 +63,17 @@
                     })"
                     :key="itemID"
                     :item="items[itemID]"
-                    class="mx-1 mb-1 mb-1"
+                    class="mx-1 mb-1 mb-1 item"
                     @edit="readyUpdateItem(itemID)"
                     @shift="shiftItem(itemID)"
                   />
-                  <div class="mt-2 mb-1 w-4/5 mx-auto">
+                  <div key="button" class="mt-2 mb-1 w-4/5 mx-auto item">
                     <FlatIconButton
                       icon="plus-circle"
                       @click="readyCreateItem({ stageID, laneID: childID })"
                     />
                   </div>
-                </div>
+                </transition-group>
               </div>
             </div>
           </template>
@@ -79,20 +83,22 @@
             class="inline-block align-top mx-1 mt-1 pr-1"
             :style="{ width: 'calc(100vw - 2rem)', 'max-width': '16rem' }"
           >
-            <ItemCard
-              v-for="itemID in getItemIDListAt({ stageID, laneID })"
-              :key="itemID"
-              :item="items[itemID]"
-              class="mx-1 mb-1"
-              @edit="readyUpdateItem(itemID)"
-              @shift="shiftItem(itemID)"
-            />
-            <div class="mt-2 mb-1 w-4/5 mx-auto">
-              <FlatIconButton
-                icon="plus-circle"
-                @click="readyCreateItem({ stageID, laneID })"
+            <transition-group tag="div" name="items">
+              <ItemCard
+                v-for="itemID in getItemIDListAt({ stageID, laneID })"
+                :key="itemID"
+                :item="items[itemID]"
+                class="mx-1 mb-1 item"
+                @edit="readyUpdateItem(itemID)"
+                @shift="shiftItem(itemID)"
               />
-            </div>
+              <div key="button" class="mt-2 mb-1 w-4/5 mx-auto item">
+                <FlatIconButton
+                  icon="plus-circle"
+                  @click="readyCreateItem({ stageID, laneID })"
+                />
+              </div>
+            </transition-group>
           </div>
         </template>
       </div>
@@ -246,3 +252,17 @@ export default class Index extends Vue {
   }
 }
 </script>
+
+<style>
+.item {
+  transition: all 0.5s;
+}
+.items-enter {
+  opacity: 0;
+  transform: translateX(-4rem);
+}
+.items-leave-to {
+  opacity: 0;
+  transform: translateX(4rem);
+}
+</style>
