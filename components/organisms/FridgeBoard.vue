@@ -253,9 +253,9 @@ export default class Index extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 .item {
-  transition: all 0.5s;
+  transition: all 0.3s;
 }
 .items-enter {
   opacity: 0;

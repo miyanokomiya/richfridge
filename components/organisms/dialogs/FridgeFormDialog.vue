@@ -5,60 +5,87 @@
     </div>
     <form v-if="fridgeDraft" class="mt-1" @submit.prevent="submit">
       <div class="overflow-y-auto" :style="{ 'max-height': '50vh' }">
-        <div v-if="tabValue === 'lanes'" class="border p-1 pt-0">
-          <div
-            v-for="(laneID, i) in fridgeDraft.laneOrder"
-            :key="laneID"
-            class="mt-1 border-b"
-          >
-            <ToggleOrderButton v-if="i > 0" @click="upLane(i)" />
-            <template v-if="lanesDraft[laneID]">
-              <SortableTextInput
-                v-model="lanesDraft[laneID].name"
-                @remove="removeLane(laneID)"
-              />
-              <div v-if="lanesDraft[laneID].childOrder.length > 0">
-                <div
-                  v-for="(childID, j) in lanesDraft[laneID].childOrder"
-                  :key="childID"
-                >
-                  <ToggleOrderButton v-if="j > 0" @click="upLane(j, laneID)" />
-                  <div class="flex items-center justify-between mt-1">
-                    <div class="h-1 w-4 border"></div>
-                    <SortableTextInput
-                      v-if="lanesDraft[childID]"
-                      v-model="lanesDraft[childID].name"
-                      :style="{ width: 'calc(100% - 1rem)' }"
-                      @remove="removeLane(childID, laneID)"
+        <div v-if="tabValue === 'lanes'">
+          <transition-group tag="div" name="lanes" class="border p-1 pt-0">
+            <div
+              v-for="(laneID, i) in fridgeDraft.laneOrder"
+              :key="laneID"
+              class="mt-1 border-b lane"
+            >
+              <ToggleOrderButton v-if="i > 0" @click="upLane(i)" />
+              <template v-if="lanesDraft[laneID]">
+                <SortableTextInput
+                  v-model="lanesDraft[laneID].name"
+                  @remove="removeLane(laneID)"
+                />
+                <transition-group tag="div" name="child-lanes">
+                  <template v-if="lanesDraft[laneID].childOrder.length > 0">
+                    <div
+                      v-for="(childID, j) in lanesDraft[laneID].childOrder"
+                      :key="childID"
+                      class="child-lane"
+                    >
+                      <ToggleOrderButton
+                        v-if="j > 0"
+                        @click="upLane(j, laneID)"
+                      />
+                      <div class="flex items-center justify-between mt-1">
+                        <div class="h-1 w-4 border"></div>
+                        <SortableTextInput
+                          v-if="lanesDraft[childID]"
+                          v-model="lanesDraft[childID].name"
+                          :style="{ width: 'calc(100% - 1rem)' }"
+                          @remove="removeLane(childID, laneID)"
+                        />
+                      </div>
+                    </div>
+                  </template>
+                  <div
+                    key="child-lane-button"
+                    class="ml-4 child-lane"
+                    :style="{ width: 'calc(100% - 1rem - 2rem)' }"
+                  >
+                    <FlatIconButton
+                      class="my-1"
+                      icon="plus-circle"
+                      @click="addLane(laneID)"
                     />
                   </div>
-                </div>
-              </div>
-              <div class="ml-4" :style="{ width: 'calc(100% - 1rem - 2rem)' }">
-                <FlatIconButton
-                  class="my-1"
-                  icon="plus-circle"
-                  @click="addLane(laneID)"
+                </transition-group>
+              </template>
+            </div>
+            <FlatIconButton
+              key="lane-button"
+              class="mt-1 lane"
+              icon="plus-circle"
+              @click="addLane()"
+            />
+          </transition-group>
+        </div>
+        <div v-else-if="tabValue === 'stages'">
+          <!-- laneとstageのtransition-groupを同一視されてしまうので構造を変える -->
+          <div>
+            <transition-group tag="div" name="stages" class="border p-1 pt-0">
+              <div
+                v-for="(stageID, i) in fridgeDraft.stageOrder"
+                :key="stageID"
+                class="mt-1 stage"
+              >
+                <ToggleOrderButton v-if="i > 0" @click="upStage(i)" />
+                <SortableTextInput
+                  v-if="stagesDraft[stageID]"
+                  v-model="stagesDraft[stageID].name"
+                  @remove="removeStage(stageID)"
                 />
               </div>
-            </template>
+              <FlatIconButton
+                key="stage-button"
+                class="mt-2 stage"
+                icon="plus-circle"
+                @click="addStage"
+              />
+            </transition-group>
           </div>
-          <FlatIconButton class="mt-1" icon="plus-circle" @click="addLane()" />
-        </div>
-        <div v-else-if="tabValue === 'stages'" class="border p-1 pt-0">
-          <div
-            v-for="(stageID, i) in fridgeDraft.stageOrder"
-            :key="stageID"
-            class="mt-1"
-          >
-            <ToggleOrderButton v-if="i > 0" @click="upStage(i)" />
-            <SortableTextInput
-              v-if="stagesDraft[stageID]"
-              v-model="stagesDraft[stageID].name"
-              @remove="removeStage(stageID)"
-            />
-          </div>
-          <FlatIconButton class="mt-2" icon="plus-circle" @click="addStage" />
         </div>
         <div v-else>
           <ValidTextInput v-model="fridgeDraft.name" label="Name" />
@@ -217,3 +244,21 @@ export default class FridgeFormDialog extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.lane,
+.child-lane,
+.stage {
+  transition: all 0.3s;
+}
+.lanes-enter,
+.child-lanes-enter,
+.stages-enter {
+  opacity: 0;
+}
+.lanes-leave-to,
+.child-lanes-leave-to,
+.stages-leave-to {
+  opacity: 0;
+}
+</style>
