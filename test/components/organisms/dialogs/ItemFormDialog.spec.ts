@@ -40,15 +40,12 @@ describe('components/organisms/dialogs/ItemFormDialog', () => {
     })
 
     describe('laneOptionList', () => {
-      test('lane の option 一覧を取得できること', () => {
+      test('配列を取得できること', () => {
         const wrapper = mount(ItemFormDialog, {
           propsData: { ...props }
         })
         const vm = wrapper.vm as any
-        expect(vm.laneOptionList).toEqual([
-          { value: 'bbb', label: 'BBB' },
-          { value: 'aaa', label: 'AAA' }
-        ])
+        expect(vm.laneOptionList).toBeInstanceOf(Array)
       })
     })
 

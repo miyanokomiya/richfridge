@@ -15,9 +15,21 @@ export function getMock() {
   const stageBB = models.createStage({ name: 'BB' })
   const stages = { aa: stageAA, bb: stageBB }
 
-  const laneAAA = models.createLane({ name: 'AAA' })
+  const laneAAA = models.createLane({
+    name: 'AAA',
+    childOrder: ['ccc', 'ddd', 'fff']
+  })
   const laneBBB = models.createLane({ name: 'BBB' })
-  const lanes = { aaa: laneAAA, bbb: laneBBB }
+  const laneCCC = models.createLane({ name: 'CCC' })
+  const laneDDD = models.createLane({ name: 'DDD' })
+  const laneFFF = models.createLane({ name: 'FFF' })
+  const lanes = {
+    aaa: laneAAA,
+    bbb: laneBBB,
+    ccc: laneCCC,
+    ddd: laneDDD,
+    fff: laneFFF
+  }
 
   return {
     fridge,

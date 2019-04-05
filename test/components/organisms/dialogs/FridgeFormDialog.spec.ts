@@ -89,5 +89,40 @@ describe('components/organisms/dialogs/FridgeFormDialog', () => {
         expect(vm.stagesDraft).not.toHaveProperty('bb')
       })
     })
+
+    describe('upLane', () => {
+      describe('parentID を指定した場合', () => {
+        test('親laneのchildOrderにて順序を1つ前と入れ替えること', () => {
+          const wrapper = mount(FridgeFormDialog, {
+            propsData: { ...props }
+          })
+          const vm = wrapper.vm as any
+          vm.upLane(2, 'aaa')
+          expect(vm.lanesDraft.aaa.childOrder).toEqual(['ccc', 'fff', 'ddd'])
+        })
+      })
+
+      describe('parentID を指定しない場合', () => {
+        test('fridge.laneOrderにて順序を1つ前と入れ替えること', () => {
+          const wrapper = mount(FridgeFormDialog, {
+            propsData: { ...props }
+          })
+          const vm = wrapper.vm as any
+          vm.upLane(1)
+          expect(vm.fridgeDraft.laneOrder).toEqual(['aaa', 'bbb'])
+        })
+      })
+    })
+
+    describe('upStage', () => {
+      test('fridge.stageOrderにて順序を1つ前と入れ替えること', () => {
+        const wrapper = mount(FridgeFormDialog, {
+          propsData: { ...props }
+        })
+        const vm = wrapper.vm as any
+        vm.upStage(1)
+        expect(vm.fridgeDraft.stageOrder).toEqual(['aa', 'bb'])
+      })
+    })
   })
 })

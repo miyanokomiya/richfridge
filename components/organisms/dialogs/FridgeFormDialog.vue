@@ -7,10 +7,11 @@
       <div class="overflow-y-auto" :style="{ 'max-height': '50vh' }">
         <div v-if="tabValue === 'lanes'" class="border p-1 pt-0">
           <div
-            v-for="laneID in fridgeDraft.laneOrder"
+            v-for="(laneID, i) in fridgeDraft.laneOrder"
             :key="laneID"
-            class="mt-1"
+            class="mt-1 border-b"
           >
+            <ToggleOrderButton v-if="i > 0" @click="upLane(i)" />
             <template v-if="lanesDraft[laneID]">
               <SortableTextInput
                 v-model="lanesDraft[laneID].name"
@@ -18,36 +19,39 @@
               />
               <div v-if="lanesDraft[laneID].childOrder.length > 0">
                 <div
-                  v-for="childID in lanesDraft[laneID].childOrder"
+                  v-for="(childID, j) in lanesDraft[laneID].childOrder"
                   :key="childID"
-                  class="flex items-center justify-between mt-1"
                 >
-                  <div class="h-1 w-4 border"></div>
-                  <SortableTextInput
-                    v-if="lanesDraft[childID]"
-                    v-model="lanesDraft[childID].name"
-                    :style="{ width: 'calc(100% - 1rem)' }"
-                    @remove="removeLane(childID, laneID)"
-                  />
+                  <ToggleOrderButton v-if="j > 0" @click="upLane(j, laneID)" />
+                  <div class="flex items-center justify-between mt-1">
+                    <div class="h-1 w-4 border"></div>
+                    <SortableTextInput
+                      v-if="lanesDraft[childID]"
+                      v-model="lanesDraft[childID].name"
+                      :style="{ width: 'calc(100% - 1rem)' }"
+                      @remove="removeLane(childID, laneID)"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="ml-4" :style="{ width: 'calc(100% - 1rem - 2rem)' }">
                 <FlatIconButton
-                  class="mt-1"
+                  class="my-1"
                   icon="plus-circle"
                   @click="addLane(laneID)"
                 />
               </div>
             </template>
           </div>
-          <FlatIconButton class="mt-2" icon="plus-circle" @click="addLane()" />
+          <FlatIconButton class="mt-1" icon="plus-circle" @click="addLane()" />
         </div>
         <div v-else-if="tabValue === 'stages'" class="border p-1 pt-0">
           <div
-            v-for="stageID in fridgeDraft.stageOrder"
+            v-for="(stageID, i) in fridgeDraft.stageOrder"
             :key="stageID"
             class="mt-1"
           >
+            <ToggleOrderButton v-if="i > 0" @click="upStage(i)" />
             <SortableTextInput
               v-if="stagesDraft[stageID]"
               v-model="stagesDraft[stageID].name"
@@ -84,6 +88,7 @@ import ValidTextInput from '@/components/atoms/forms/ValidTextInput.vue'
 import SelectInput from '@/components/atoms/forms/SelectInput.vue'
 import NavigationTabs from '@/components/molecules/NavigationTabs.vue'
 import BaseButton from '@/components/atoms/forms/BaseButton.vue'
+import ToggleOrderButton from '@/components/atoms/forms/ToggleOrderButton.vue'
 import FlatIconButton from '@/components/atoms/forms/FlatIconButton.vue'
 import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vue'
 
@@ -94,6 +99,7 @@ import SortableTextInput from '@/components/molecules/forms/SortableTextInput.vu
     SelectInput,
     NavigationTabs,
     BaseButton,
+    ToggleOrderButton,
     FlatIconButton,
     SortableTextInput
   }
@@ -184,6 +190,22 @@ export default class FridgeFormDialog extends Vue {
       message: '本当に削除しますか？',
       exec: () => this.remove()
     })
+  }
+
+  upLane(index, parentID) {
+    const order = parentID
+      ? this.lanesDraft[parentID].childOrder
+      : this.fridgeDraft.laneOrder
+    const target = order[index]
+    Vue.set(order, index, order[index - 1])
+    Vue.set(order, index - 1, target)
+  }
+
+  upStage(index) {
+    const order = this.fridgeDraft.stageOrder
+    const target = order[index]
+    Vue.set(order, index, order[index - 1])
+    Vue.set(order, index - 1, target)
   }
 
   submit() {
