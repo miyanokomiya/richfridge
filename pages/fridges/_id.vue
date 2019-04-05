@@ -54,7 +54,7 @@ export default class FridgeShow extends Vue {
   attach() {
     this.unsubscribes.push(
       this.fridgeRef.onSnapshot(doc => {
-        this.fridge = doc.data() as Fridge
+        this.fridge = models.createFridge(doc.data())
       })
     )
     this.unsubscribes.push(
@@ -63,7 +63,11 @@ export default class FridgeShow extends Vue {
           if (change.type === 'removed') {
             Vue.delete(this.items, change.doc.id)
           } else {
-            Vue.set(this.items, change.doc.id, change.doc.data())
+            Vue.set(
+              this.items,
+              change.doc.id,
+              models.createItem(change.doc.data())
+            )
           }
         })
       })
@@ -74,7 +78,11 @@ export default class FridgeShow extends Vue {
           if (change.type === 'removed') {
             Vue.delete(this.lanes, change.doc.id)
           } else {
-            Vue.set(this.lanes, change.doc.id, change.doc.data())
+            Vue.set(
+              this.lanes,
+              change.doc.id,
+              models.createLane(change.doc.data())
+            )
           }
         })
       })
@@ -85,7 +93,11 @@ export default class FridgeShow extends Vue {
           if (change.type === 'removed') {
             Vue.delete(this.stages, change.doc.id)
           } else {
-            Vue.set(this.stages, change.doc.id, change.doc.data())
+            Vue.set(
+              this.stages,
+              change.doc.id,
+              models.createStage(change.doc.data())
+            )
           }
         })
       })
