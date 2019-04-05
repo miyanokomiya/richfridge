@@ -48,6 +48,7 @@
     />
     <ConfirmDialog
       :value="!!$confirm.message"
+      :message="$confirm.message"
       @input="() => $confirm.clear()"
       @exec="exec"
     />
