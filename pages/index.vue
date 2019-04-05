@@ -59,7 +59,11 @@ export default class RootIndex extends Vue {
             if (change.type === 'removed') {
               Vue.delete(this.fridgeAuths, change.doc.id)
             } else {
-              Vue.set(this.fridgeAuths, change.doc.id, change.doc.data())
+              Vue.set(
+                this.fridgeAuths,
+                change.doc.id,
+                models.createFridgeAuth(change.doc.data())
+              )
 
               // ローカルコミットで追加済ならロードはスキップ
               if (change.type === 'added' && this.fridges[change.doc.id]) {
@@ -70,7 +74,7 @@ export default class RootIndex extends Vue {
                 .doc(change.doc.id)
                 .get()
                 .then(doc => {
-                  Vue.set(this.fridges, doc.id, doc.data())
+                  Vue.set(this.fridges, doc.id, models.createFridge(doc.data()))
                 })
             }
           })
