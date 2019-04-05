@@ -4,6 +4,10 @@ import * as admin from 'firebase-admin'
 admin.initializeApp()
 const db = admin.firestore()
 
+exports.onDestroyUser = functions.auth.user().onDelete(user => {
+  return afterDestroyUser(user.uid)
+})
+
 exports.onDeleteFridgeAuth = functions.firestore
   .document('fridgeAuths/{fridgeID}')
   .onDelete((snap, _) => {
@@ -21,6 +25,16 @@ exports.onDeleteLane = functions.firestore
   .onDelete((_, context) => {
     return afterDeleteLane(context.params.fridgeID, context.params.laneID)
   })
+
+async function afterDestroyUser(userID: string) {
+  const snap = await db
+    .collection('fridgeAuths')
+    .where('ownerID', '==', userID)
+    .get()
+  const batch = db.batch()
+  snap.docs.forEach(doc => batch.delete(doc.ref))
+  await batch.commit()
+}
 
 async function afterDeleteStage(fridgeID: string, stageID: string) {
   const snap = await db
