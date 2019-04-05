@@ -80,7 +80,7 @@ export default class ItemFormDialog extends Vue {
 
   get laneOptionList(): { label: string; value: any }[] {
     if (!this.fridge) return []
-    return models.getOptionList(this.lanes, this.fridge.laneOrder)
+    return models.getLaneOptionList(this.lanes, this.fridge.laneOrder)
   }
 
   get stageOptionList(): { label: string; value: any }[] {

@@ -66,6 +66,25 @@ export function getOptionList(
   }))
 }
 
+export function getLaneOptionList(lanes: Lanes, laneOrder: string[]): Option[] {
+  const list = []
+  laneOrder.forEach(parentID => {
+    const parent = lanes[parentID]
+    parent.childOrder.forEach(childID => {
+      const child = lanes[childID]
+      list.push({
+        label: `${parent.name} / ${child.name}`,
+        value: childID
+      })
+    })
+    list.push({
+      label: parent.name,
+      value: parentID
+    })
+  })
+  return list
+}
+
 export function getTmpID() {
   return `NEW_${Math.random()}`
 }
@@ -157,10 +176,6 @@ export function getItemIDListAt(arg: {
   }
   list.sort((a, b) => (arg.items[a].name >= arg.items[b].name ? 1 : -1))
   return list
-}
-
-export function getLaneIDTree(lanes: Lanes): LaneIDNode[] {
-  return []
 }
 
 export function existedLaneID(arg: {

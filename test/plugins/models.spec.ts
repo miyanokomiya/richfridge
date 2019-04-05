@@ -123,6 +123,25 @@ describe('models', () => {
     })
   })
 
+  describe('getLaneOptionList', () => {
+    test('laneのtree構造を反映したoption一覧を取得できること', () => {
+      const lanes = {
+        a: models.createLane({ name: 'aa' }),
+        b: models.createLane({ name: 'bb', childOrder: ['d', 'c'] }),
+        c: models.createLane({ name: 'cc' }),
+        d: models.createLane({ name: 'dd' })
+      }
+      const order = ['b', 'a']
+      const result = models.getLaneOptionList(lanes, order)
+      expect(result).toEqual([
+        { value: 'd', label: 'bb / dd' },
+        { value: 'c', label: 'bb / cc' },
+        { value: 'b', label: 'bb' },
+        { value: 'a', label: 'aa' }
+      ])
+    })
+  })
+
   describe('convertTmpID', () => {
     const getLaneID = () => 'lane_id'
     const getStageID = () => 'stage_id'
