@@ -76,6 +76,7 @@ export default class Default extends Vue {
   @Watch('$route')
   $routeChanged() {
     this.$confirm.clear()
+    this.showUserConfig = false
   }
 
   async signOut() {
