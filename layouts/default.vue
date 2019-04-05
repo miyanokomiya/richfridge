@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { signOut, signInWithRedirect } from '@/plugins/firebase'
+import { signOut, signInWithRedirect, destroyUser } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
 import ConfirmDialog from '@/components/organisms/dialogs/ConfirmDialog.vue'
 
@@ -90,7 +90,14 @@ export default class Default extends Vue {
   }
 
   deleteAccount() {
-    // TODO
+    this.$confirm.set({
+      message:
+        '作成した全てのデータは削除され、\n復元することはできません。\nアカウントを削除しますか？',
+      exec: async () => {
+        await destroyUser()
+        location.reload()
+      }
+    })
   }
 
   exec() {

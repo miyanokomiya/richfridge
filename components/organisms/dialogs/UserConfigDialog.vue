@@ -4,9 +4,9 @@
       <BaseButton class="mt-4" color="white" @click="signOut"
         >Sign out</BaseButton
       >
-      <!-- <BaseButton class="mt-4" color="red" @click="deleteAccount" -->
-      <!--   >Delete account</BaseButton -->
-      <!-- > -->
+      <BaseButton class="mt-4" color="red" @click="deleteAccount"
+        >Delete account</BaseButton
+      >
     </div>
   </BaseDialog>
 </template>

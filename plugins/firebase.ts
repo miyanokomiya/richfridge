@@ -52,5 +52,10 @@ export function signOut() {
     .catch(console.log)
 }
 
+export async function destroyUser() {
+  const user = firebase.auth().currentUser
+  await user.delete().catch(console.log)
+}
+
 export default firebase
 export const db = firebase.firestore()
