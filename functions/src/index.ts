@@ -17,13 +17,43 @@ exports.onDeleteFridgeAuth = functions.firestore
 exports.onDeleteStage = functions.firestore
   .document('fridges/{fridgeID}/stages/{stageID}')
   .onDelete((_, context) => {
-    return afterDeleteStage(context.params.fridgeID, context.params.stageID)
+    return afterDeleteStage(
+      `fridges/${context.params.fridgeID}`,
+      context.params.stageID
+    )
   })
 
 exports.onDeleteLane = functions.firestore
   .document('fridges/{fridgeID}/lanes/{laneID}')
   .onDelete((_, context) => {
-    return afterDeleteLane(context.params.fridgeID, context.params.laneID)
+    return afterDeleteLane(
+      `fridges/${context.params.fridgeID}`,
+      context.params.laneID
+    )
+  })
+
+exports.onDeletePublicFridge = functions.firestore
+  .document('publicFridges/{fridgeID}')
+  .onDelete((_, context) => {
+    return afterDeleteFridge(`publicFridges/${context.params.fridgeID}`)
+  })
+
+exports.onDeletePublicStage = functions.firestore
+  .document('publicFridges/{fridgeID}/stages/{stageID}')
+  .onDelete((_, context) => {
+    return afterDeleteStage(
+      `publicFridges/${context.params.fridgeID}`,
+      context.params.stageID
+    )
+  })
+
+exports.onDeletePublicLane = functions.firestore
+  .document('publicFridges/{fridgeID}/lanes/{laneID}')
+  .onDelete((_, context) => {
+    return afterDeleteLane(
+      `publicFridges/${context.params.fridgeID}`,
+      context.params.laneID
+    )
   })
 
 async function afterDestroyUser(userID: string) {
@@ -36,9 +66,9 @@ async function afterDestroyUser(userID: string) {
   await batch.commit()
 }
 
-async function afterDeleteStage(fridgeID: string, stageID: string) {
+async function afterDeleteStage(fridgePath: string, stageID: string) {
   const snap = await db
-    .collection(`fridges/${fridgeID}/items`)
+    .collection(`${fridgePath}/items`)
     .where('stageID', '==', stageID)
     .get()
   const batch = db.batch()
@@ -46,9 +76,9 @@ async function afterDeleteStage(fridgeID: string, stageID: string) {
   await batch.commit()
 }
 
-async function afterDeleteLane(fridgeID: string, laneID: string) {
+async function afterDeleteLane(fridgePath: string, laneID: string) {
   const snap = await db
-    .collection(`fridges/${fridgeID}/items`)
+    .collection(`${fridgePath}/items`)
     .where('laneID', '==', laneID)
     .get()
   const batch = db.batch()
@@ -59,6 +89,10 @@ async function afterDeleteLane(fridgeID: string, laneID: string) {
 async function afterDeleteFridgeAuth(fridgeID: string) {
   const fridgePath = `fridges/${fridgeID}`
   await db.doc(fridgePath).delete()
+  await afterDeleteFridge(fridgePath)
+}
+
+async function afterDeleteFridge(fridgePath: string) {
   await batchDeleteCollection(`${fridgePath}/stages`)
   await batchDeleteCollection(`${fridgePath}/lanes`)
 }

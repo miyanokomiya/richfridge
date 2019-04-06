@@ -72,5 +72,9 @@ service cloud.firestore {
         allow delete: if auth() && canDelete(getAuth());
       }
     }
+
+    match /publicFridges/{document=**} {
+      allow read, write: if true;
+    }
   }
 }
