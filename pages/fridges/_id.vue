@@ -23,6 +23,11 @@ import FridgeBoard from '@/components/organisms/FridgeBoard.vue'
 @Component({
   components: {
     FridgeBoard
+  },
+  head() {
+    return {
+      title: this.fridge ? this.fridge.name : 'fridge'
+    }
   }
 })
 export default class FridgeShow extends Vue {

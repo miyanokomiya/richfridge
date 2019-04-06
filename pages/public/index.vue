@@ -28,6 +28,9 @@ import BaseButton from '@/components/atoms/forms/BaseButton.vue'
 @Component({
   components: {
     BaseButton
+  },
+  head() {
+    return { title: 'public' }
   }
 })
 export default class PublicIndex extends Vue {

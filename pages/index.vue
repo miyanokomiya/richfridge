@@ -33,6 +33,9 @@ import FlatIconButton from '@/components/atoms/forms/FlatIconButton.vue'
 @Component({
   components: {
     FlatIconButton
+  },
+  head() {
+    return { title: 'mypage' }
   }
 })
 export default class RootIndex extends Vue {
