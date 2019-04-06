@@ -20,5 +20,10 @@ declare module 'vue/types/vue' {
       set: (arg: { message: string; exec: () => void }) => void
       clear: () => void
     }
+    $messages: {
+      messages: string[]
+      push: (message: string) => void
+      clear: () => void
+    }
   }
 }

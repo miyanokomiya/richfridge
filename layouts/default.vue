@@ -53,6 +53,20 @@
       @input="$confirm.clear()"
       @exec="exec"
     />
+    <transition-group
+      tag="div"
+      name="transition-messages"
+      class="fixed pin-l pin-b flex flex-col w-full px-2 pointer-events-none"
+    >
+      <MessageCard
+        v-for="message in $messages.messages"
+        :key="message"
+        class="transition-message mb-2 pointer-events-auto"
+        @close="$messages.clear(message)"
+      >
+        {{ message }}
+      </MessageCard>
+    </transition-group>
   </div>
 </template>
 
@@ -61,11 +75,13 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { signOut, signInWithRedirect, destroyUser } from '@/plugins/firebase'
 import UserConfigDialog from '@/components/organisms/dialogs/UserConfigDialog.vue'
 import ConfirmDialog from '@/components/organisms/dialogs/ConfirmDialog.vue'
+import MessageCard from '@/components/molecules/MessageCard.vue'
 
 @Component({
   components: {
     UserConfigDialog,
-    ConfirmDialog
+    ConfirmDialog,
+    MessageCard
   }
 })
 export default class Default extends Vue {
@@ -123,5 +139,17 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
+}
+
+.transition-message {
+  transition: all 0.3s;
+}
+.transition-messages-enter {
+  opacity: 0;
+  transform: translateX(-4rem);
+}
+.transition-messages-leave-to {
+  opacity: 0;
+  transform: translateX(4rem);
 }
 </style>

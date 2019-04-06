@@ -59,11 +59,14 @@ export default class RootIndex extends Vue {
       db
         .collection('fridgeAuths')
         .where('ownerID', '==', this.$auth.user.uid)
-        .onSnapshot(query => {
-          query.docChanges().forEach(change => {
-            if (change.type === 'removed') {
-              Vue.delete(this.fridgeAuths, change.doc.id)
-            } else {
+        .onSnapshot(
+          query => {
+            query.docChanges().forEach(change => {
+              if (change.type === 'removed') {
+                Vue.delete(this.fridgeAuths, change.doc.id)
+                return
+              }
+
               Vue.set(
                 this.fridgeAuths,
                 change.doc.id,
@@ -81,9 +84,12 @@ export default class RootIndex extends Vue {
                 .then(doc => {
                   Vue.set(this.fridges, doc.id, models.createFridge(doc.data()))
                 })
-            }
-          })
-        })
+            })
+          },
+          e => {
+            console.log(e)
+          }
+        )
     )
   }
 
