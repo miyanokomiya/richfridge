@@ -11,9 +11,12 @@ export default class PublicShow extends FridgeShow {
 
   async removeFridge() {
     this.detach()
-    await this.fridgeRef.delete()
-
-    this.$router.push('/public')
+    try {
+      await this.fridgeRef.delete()
+      this.$router.push('/public')
+    } catch (e) {
+      this.$messages.push('処理に失敗しました', e)
+    }
   }
 }
 </script>

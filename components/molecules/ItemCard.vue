@@ -21,7 +21,7 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 
 @Component
-export default class Index extends Vue {
+export default class ItemCard extends Vue {
   @Prop({ required: true })
   item!: Item
 

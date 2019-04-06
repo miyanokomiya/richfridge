@@ -2,7 +2,10 @@ import Vue from 'vue'
 
 const messagesState = {
   messages: [],
-  push: function(message: string) {
+  push: function(message: string, e?: Error) {
+    if (e) {
+      console.log(e)
+    }
     if (this.messages.includes(message)) return
     this.messages.push(message)
   },

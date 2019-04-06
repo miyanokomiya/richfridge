@@ -34,8 +34,12 @@ export default class PublicIndex extends Vue {
   async createFridge() {
     const fridge = models.createFridge({ name: 'new' })
     const fridgeRef = db.collection('publicFridges').doc()
-    await fridgeRef.set(fridge)
-    this.$router.push(`/public/${fridgeRef.id}`)
+    try {
+      await fridgeRef.set(fridge)
+      this.$router.push(`/public/${fridgeRef.id}`)
+    } catch (e) {
+      this.$messages.push('処理に失敗しました', e)
+    }
   }
 }
 </script>

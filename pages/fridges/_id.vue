@@ -53,54 +53,66 @@ export default class FridgeShow extends Vue {
 
   attach() {
     this.unsubscribes.push(
-      this.fridgeRef.onSnapshot(doc => {
-        this.fridge = models.createFridge(doc.data())
-      })
+      this.fridgeRef.onSnapshot(
+        doc => {
+          this.fridge = models.createFridge(doc.data())
+        },
+        e => this.$messages.push('データ取得に失敗しました', e)
+      )
     )
     this.unsubscribes.push(
-      this.fridgeRef.collection('items').onSnapshot(query => {
-        query.docChanges().forEach(change => {
-          if (change.type === 'removed') {
-            Vue.delete(this.items, change.doc.id)
-          } else {
-            Vue.set(
-              this.items,
-              change.doc.id,
-              models.createItem(change.doc.data())
-            )
-          }
-        })
-      })
+      this.fridgeRef.collection('items').onSnapshot(
+        query => {
+          query.docChanges().forEach(change => {
+            if (change.type === 'removed') {
+              Vue.delete(this.items, change.doc.id)
+            } else {
+              Vue.set(
+                this.items,
+                change.doc.id,
+                models.createItem(change.doc.data())
+              )
+            }
+          })
+        },
+        e => this.$messages.push('データ取得に失敗しました', e)
+      )
     )
     this.unsubscribes.push(
-      this.fridgeRef.collection('lanes').onSnapshot(query => {
-        query.docChanges().forEach(change => {
-          if (change.type === 'removed') {
-            Vue.delete(this.lanes, change.doc.id)
-          } else {
-            Vue.set(
-              this.lanes,
-              change.doc.id,
-              models.createLane(change.doc.data())
-            )
-          }
-        })
-      })
+      this.fridgeRef.collection('lanes').onSnapshot(
+        query => {
+          query.docChanges().forEach(change => {
+            if (change.type === 'removed') {
+              Vue.delete(this.lanes, change.doc.id)
+            } else {
+              Vue.set(
+                this.lanes,
+                change.doc.id,
+                models.createLane(change.doc.data())
+              )
+            }
+          })
+        },
+        e => this.$messages.push('データ取得に失敗しました', e)
+      )
     )
     this.unsubscribes.push(
-      this.fridgeRef.collection('stages').onSnapshot(query => {
-        query.docChanges().forEach(change => {
-          if (change.type === 'removed') {
-            Vue.delete(this.stages, change.doc.id)
-          } else {
-            Vue.set(
-              this.stages,
-              change.doc.id,
-              models.createStage(change.doc.data())
-            )
-          }
-        })
-      })
+      this.fridgeRef.collection('stages').onSnapshot(
+        query => {
+          query.docChanges().forEach(change => {
+            if (change.type === 'removed') {
+              Vue.delete(this.stages, change.doc.id)
+            } else {
+              Vue.set(
+                this.stages,
+                change.doc.id,
+                models.createStage(change.doc.data())
+              )
+            }
+          })
+        },
+        e => this.$messages.push('データ取得に失敗しました', e)
+      )
     )
   }
 
@@ -113,6 +125,7 @@ export default class FridgeShow extends Vue {
       .collection('items')
       .doc(itemID)
       .set(item)
+      .catch(e => this.$messages.push('処理に失敗しました', e))
   }
 
   removeItem(itemID: string) {
@@ -120,6 +133,7 @@ export default class FridgeShow extends Vue {
       .collection('items')
       .doc(itemID)
       .delete()
+      .catch(e => this.$messages.push('処理に失敗しました', e))
   }
 
   async updateFridge(arg: { fridge: Fridge; lanes: Lanes; stages: Stages }) {
@@ -160,17 +174,22 @@ export default class FridgeShow extends Vue {
         batch.delete(this.fridgeRef.collection('lanes').doc(laneID))
       })
 
-    await batch.commit()
+    await batch
+      .commit()
+      .catch(e => this.$messages.push('処理に失敗しました', e))
   }
 
   async removeFridge() {
     this.detach()
-    await db
-      .collection('fridgeAuths')
-      .doc(this.fridgeID)
-      .delete()
-
-    this.$router.push('/')
+    try {
+      await db
+        .collection('fridgeAuths')
+        .doc(this.fridgeID)
+        .delete()
+      this.$router.push('/')
+    } catch (e) {
+      this.$messages.push('処理に失敗しました', e)
+    }
   }
 }
 </script>

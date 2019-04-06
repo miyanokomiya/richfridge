@@ -84,11 +84,10 @@ export default class RootIndex extends Vue {
                 .then(doc => {
                   Vue.set(this.fridges, doc.id, models.createFridge(doc.data()))
                 })
+                .catch(e => this.$messages.push('データ取得に失敗しました', e))
             })
           },
-          e => {
-            console.log(e)
-          }
+          e => this.$messages.push('データ取得に失敗しました', e)
         )
     )
   }
@@ -103,9 +102,13 @@ export default class RootIndex extends Vue {
     const fridge = models.createFridge({ name: 'new' })
     const fridgeRef = db.collection('fridges').doc(fridgeAuthRef.id)
 
-    await fridgeRef.set(fridge)
-    Vue.set(this.fridges, fridgeAuthRef.id, fridge)
-    await fridgeAuthRef.set(fridgeAuth)
+    try {
+      await fridgeRef.set(fridge)
+      Vue.set(this.fridges, fridgeAuthRef.id, fridge)
+      await fridgeAuthRef.set(fridgeAuth)
+    } catch (e) {
+      this.$messages.push('処理に失敗しました', e)
+    }
   }
 }
 </script>

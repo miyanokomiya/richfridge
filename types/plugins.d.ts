@@ -22,7 +22,7 @@ declare module 'vue/types/vue' {
     }
     $messages: {
       messages: string[]
-      push: (message: string) => void
+      push: (message: string, e?: Error) => void
       clear: () => void
     }
   }
