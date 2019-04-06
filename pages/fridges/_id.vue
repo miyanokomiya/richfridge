@@ -10,6 +10,7 @@
       @removeItem="removeItem"
       @updateFridge="updateFridge"
       @removeFridge="removeFridge"
+      @cloneFridge="cloneFridge"
     />
   </section>
 </template>
@@ -192,6 +193,37 @@ export default class FridgeShow extends Vue {
         .doc(this.fridgeID)
         .delete()
       this.$router.push('/')
+    } catch (e) {
+      this.$messages.push('処理に失敗しました', e)
+    }
+  }
+
+  async cloneFridge() {
+    const fridgeAuth = models.createFridgeAuth({
+      ownerID: this.$auth.user.uid,
+      users: { [this.$auth.user.uid]: { type: 'owner' } }
+    })
+    const fridgeAuthRef = db.collection('fridgeAuths').doc()
+
+    const fridge = models.clone<Fridge>(this.fridge)
+    const fridgeRef = db.collection('fridges').doc(fridgeAuthRef.id)
+
+    try {
+      await fridgeRef.set(fridge)
+      await fridgeAuthRef.set(fridgeAuth)
+
+      const batch = db.batch()
+      Object.keys(this.lanes).forEach(id => {
+        batch.set(fridgeRef.collection('lanes').doc(id), this.lanes[id])
+      })
+      Object.keys(this.stages).forEach(id => {
+        batch.set(fridgeRef.collection('stages').doc(id), this.stages[id])
+      })
+      Object.keys(this.items).forEach(id => {
+        batch.set(fridgeRef.collection('items').doc(id), this.items[id])
+      })
+      await batch.commit()
+      this.$router.push(`/fridges/${fridgeRef.id}`)
     } catch (e) {
       this.$messages.push('処理に失敗しました', e)
     }

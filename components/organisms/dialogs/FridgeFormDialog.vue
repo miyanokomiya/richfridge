@@ -103,6 +103,9 @@
         <BaseButton color="white" @click="input(false)">Cancel</BaseButton>
         <BaseButton class="ml-4" @click="submit">Update</BaseButton>
       </div>
+      <div v-if="showClone" class="flex justify-center mt-2 pt-2 border-t">
+        <a href="#" class="text-blue" @click.prevent="clone">mypageに複製</a>
+      </div>
     </form>
   </BaseDialog>
 </template>
@@ -153,6 +156,9 @@ export default class FridgeFormDialog extends Vue {
   @Emit()
   remove() {}
 
+  @Emit()
+  clone() {}
+
   fridgeDraft: Fridge = null
   lanesDraft: Lanes = {}
   stagesDraft: Stages = {}
@@ -164,6 +170,10 @@ export default class FridgeFormDialog extends Vue {
       { value: 'stages', label: 'Stages' },
       { value: 'fridge', label: 'Fridge' }
     ]
+  }
+
+  get showClone() {
+    return this.tabValue === 'fridge' && this.$auth.user
   }
 
   mounted() {

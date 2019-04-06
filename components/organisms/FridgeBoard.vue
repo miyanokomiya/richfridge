@@ -125,6 +125,7 @@
       @input="() => (editingFridge = false)"
       @update="updateFridge"
       @remove="removeFridge"
+      @clone="cloneFridge"
     />
   </div>
 </template>
@@ -175,6 +176,9 @@ export default class Index extends Vue {
 
   @Emit('removeFridge')
   removeFridge() {}
+
+  @Emit('cloneFridge')
+  cloneFridge() {}
 
   @Emit('removeItem')
   removeItem(itemID: string) {
