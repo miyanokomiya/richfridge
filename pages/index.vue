@@ -50,6 +50,7 @@ export default class RootIndex extends Vue {
   }
 
   created() {
+    if (!this.$auth.user) return
     this.attach()
   }
 

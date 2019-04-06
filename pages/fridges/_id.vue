@@ -47,6 +47,7 @@ export default class FridgeShow extends Vue {
   }
 
   created() {
+    if (!this.$auth.user) return
     this.attach()
   }
 

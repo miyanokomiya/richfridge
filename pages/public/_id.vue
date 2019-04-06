@@ -9,6 +9,11 @@ export default class PublicShow extends FridgeShow {
     return db.doc(`/publicFridges/${this.fridgeID}`)
   }
 
+  created() {
+    this.$auth.needAuth = false
+    this.attach()
+  }
+
   async removeFridge() {
     this.detach()
     try {

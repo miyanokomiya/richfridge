@@ -40,7 +40,9 @@
           <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
         </button>
       </div>
-      <nuxt v-else />
+      <div v-show="!notAuth">
+        <nuxt />
+      </div>
     </div>
     <UserConfigDialog
       v-model="showUserConfig"
@@ -95,6 +97,8 @@ export default class Default extends Vue {
   $routeChanged() {
     this.$confirm.clear()
     this.showUserConfig = false
+    // デフォルトでは認証必須とする
+    this.$auth.needAuth = true
   }
 
   async signOut() {

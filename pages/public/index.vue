@@ -34,6 +34,10 @@ import BaseButton from '@/components/atoms/forms/BaseButton.vue'
   }
 })
 export default class PublicIndex extends Vue {
+  created() {
+    this.$auth.needAuth = false
+  }
+
   async createFridge() {
     const fridge = models.createFridge({ name: 'new' })
     const fridgeRef = db.collection('publicFridges').doc()
