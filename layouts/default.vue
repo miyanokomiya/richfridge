@@ -10,7 +10,7 @@
           class="text-xl text-white hover:text-grey"
         />
       </nuxt-link>
-      <a
+      <button
         v-if="$header.label || $header.icon"
         class="flex items-center justify-center font-medium text-xl text-white hover:text-grey decoration-none"
         :style="{ width: 'calc(100% - 4rem)' }"
@@ -24,13 +24,14 @@
           class="ml-1 text-base text-grey-light hover:text-grey-darkest"
           :icon="$header.icon"
         />
-      </a>
-      <img
-        v-if="$auth.user"
-        :src="$auth.user.photoURL"
-        class="rounded-full w-auto h-6"
-        @click="() => (showUserConfig = true)"
-      />
+      </button>
+      <button @click="clickUserIcon">
+        <img
+          v-if="$auth.user"
+          :src="$auth.user.photoURL"
+          class="rounded-full w-auto h-6"
+        />
+      </button>
     </div>
     <div v-if="$auth.loaded" :style="{ height: 'calc(100% - 2rem)' }">
       <div v-if="notAuth" class="text-center">
@@ -98,6 +99,10 @@ export default class Default extends Vue {
         location.reload()
       }
     })
+  }
+
+  clickUserIcon() {
+    this.showUserConfig = true
   }
 
   exec() {
