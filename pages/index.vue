@@ -1,7 +1,7 @@
 <template>
-  <section class="container h-full">
-    <FlatIconButton class="my-2" icon="plus-circle" @click="createFridge" />
-    <div class="p-2">
+  <section class="container h-full p-2">
+    <FlatIconButton class="mb-2" icon="plus-circle" @click="createFridge" />
+    <div class="py-2">
       <div
         v-for="fridgeAuthID in fridgeAuthIDList"
         :key="fridgeAuthID"
@@ -15,6 +15,11 @@
           <font-awesome-icon icon="arrow-right" />
         </nuxt-link>
       </div>
+    </div>
+    <div class="text-center my-2">
+      <nuxt-link to="/public" class="text-sm">
+        公開データを作成する
+      </nuxt-link>
     </div>
   </section>
 </template>

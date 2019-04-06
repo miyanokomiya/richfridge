@@ -1,17 +1,18 @@
 <template>
-  <section class="container h-full">
-    <div class="p-4 flex flex-col justify-center">
-      <div class="text-center">
-        <p>
-          この画面から作成したデータは保護されず、URLを知っている誰もが閲覧・編集可能です。
-        </p>
-        <br />
-        <p>URLの再発行はできないため、紛失にご注意ください。</p>
-      </div>
-      <BaseButton class="my-4" @click="createFridge">
+  <section class="container h-full p-2">
+    <div>
+      <p>
+        この画面から作成したデータは保護されず、URLを知っている誰もが閲覧・編集可能です。
+      </p>
+      <p>URLの再発行はできません。紛失にご注意ください。</p>
+    </div>
+    <div class="text-center">
+      <BaseButton class="mt-4 mb-2" @click="createFridge">
         新規作成
       </BaseButton>
-      <nuxt-link to="/" class="text-center text-sm">
+    </div>
+    <div class="text-center my-2">
+      <nuxt-link to="/" class="text-sm">
         保護されたデータを作成する
       </nuxt-link>
     </div>
