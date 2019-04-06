@@ -123,6 +123,21 @@ describe('components/organisms/FridgeBoard', () => {
       })
     })
 
+    describe('cloneFridge', () => {
+      const wrapper = mount<FridgeBoard>(FridgeBoard, {
+        propsData: { fridge, items, stages, lanes }
+      })
+      const vm = wrapper.vm as any
+
+      test('cloneItem イベントが発行され、編集状態がクリアされること', () => {
+        const item = models.createItem()
+        vm.editingItem = item
+        vm.cloneFridge()
+        expect(wrapper.emitted('cloneFridge').length).toBe(1)
+        expect(vm.editingItem).toBeNull()
+      })
+    })
+
     describe('removeItem', () => {
       const wrapper = mount<FridgeBoard>(FridgeBoard, {
         propsData: { fridge, items, stages, lanes }

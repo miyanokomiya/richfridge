@@ -178,7 +178,9 @@ export default class Index extends Vue {
   removeFridge() {}
 
   @Emit('cloneFridge')
-  cloneFridge() {}
+  cloneFridge() {
+    this.cancelEditItem()
+  }
 
   @Emit('removeItem')
   removeItem(itemID: string) {

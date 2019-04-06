@@ -37,6 +37,7 @@ export default class FridgeShow extends Vue {
   lanes: Lanes = {}
   stages: Stages = {}
   unsubscribes: (() => void)[] = []
+  progressing: boolean = false
 
   get fridgeID() {
     return this.$route.params.id
@@ -199,6 +200,7 @@ export default class FridgeShow extends Vue {
   }
 
   async cloneFridge() {
+    this.progressing = true
     const fridgeAuth = models.createFridgeAuth({
       ownerID: this.$auth.user.uid,
       users: { [this.$auth.user.uid]: { type: 'owner' } }
@@ -223,9 +225,11 @@ export default class FridgeShow extends Vue {
         batch.set(fridgeRef.collection('items').doc(id), this.items[id])
       })
       await batch.commit()
+      this.progressing = false
       this.$router.push(`/fridges/${fridgeRef.id}`)
     } catch (e) {
       this.$messages.push('処理に失敗しました', e)
+      this.progressing = false
     }
   }
 }
