@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full">
+  <section class="h-full">
     <FridgeBoard
       v-if="fridge"
       :fridge="fridge"

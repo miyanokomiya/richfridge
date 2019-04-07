@@ -1,5 +1,5 @@
 <template>
-  <section class="container h-full p-2">
+  <section class="h-full p-2">
     <FlatIconButton class="mb-2" icon="plus-circle" @click="createFridge" />
     <div class="py-2">
       <div

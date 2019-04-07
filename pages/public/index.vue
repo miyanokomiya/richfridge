@@ -1,6 +1,6 @@
 <template>
-  <section class="container h-full p-2">
-    <div>
+  <section class="h-full p-2">
+    <div class="text-center">
       <p>
         この画面から作成したデータは保護されず、URLを知っている誰でも閲覧・編集可能です。
       </p>
