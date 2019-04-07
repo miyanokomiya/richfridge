@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import VueTestUtils from '@vue/test-utils'
+import '@/plugins/confirm'
+import '@/plugins/header'
+import '@/plugins/messages'
 
 Vue.config.silent = true
 

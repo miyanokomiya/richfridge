@@ -1,6 +1,7 @@
 <template>
   <section class="container h-full">
     <FridgeBoard
+      v-if="fridge"
       :fridge="fridge"
       :items="items"
       :lanes="lanes"
@@ -42,6 +43,7 @@ export default class FridgeShow extends Vue {
   get fridgeID() {
     return this.$route.params.id
   }
+
   get fridgeRef() {
     return db.doc(`/fridges/${this.fridgeID}`)
   }
