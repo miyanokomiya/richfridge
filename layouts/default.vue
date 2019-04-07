@@ -40,7 +40,7 @@
           <img src="~assets/images/btn_google_signin_dark_normal_web.png" />
         </button>
       </div>
-      <div v-show="!notAuth">
+      <div v-show="!notAuth" class="h-full">
         <nuxt />
       </div>
     </div>
