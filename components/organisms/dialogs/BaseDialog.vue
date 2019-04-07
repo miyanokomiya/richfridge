@@ -73,10 +73,12 @@ export default class BaseDialog extends Vue {
     }
   }
 
-  async show() {
+  show() {
     document.body.appendChild(this.$el)
-    await this.$nextTick()
-    this.hidden = false
+    // Fixme $nextTickだとアニメーションがうまくできなかった
+    setTimeout(() => {
+      this.hidden = false
+    }, 0)
   }
 
   beforeClose() {
