@@ -4,13 +4,17 @@
   >
     <div v-if="item" class="flex items-center">
       <div
-        class="h-6 flex items-center"
+        class="flex items-center break-words whitespace-normal leading-tight"
         :style="{ width: 'calc(100% - 24px)' }"
         @click="edit"
       >
         <span>{{ item.name }}</span>
       </div>
-      <button class="ml-auto" :style="{ width: '24px' }" @click="shift">
+      <button
+        class="ml-auto leading-tight"
+        :style="{ width: '24px' }"
+        @click="shift"
+      >
         <font-awesome-icon icon="angle-right" />
       </button>
     </div>
